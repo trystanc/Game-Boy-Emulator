@@ -1,6 +1,6 @@
 #ifndef INSTRUCTIONLENGTHS_H_INCLUDED
 #define INSTRUCTIONLENGTHS_H_INCLUDED
-
+#include "../types.h"
 #include <array>
 
 constexpr std::array<u8, 256> instructionLengths = {
@@ -21,7 +21,7 @@ constexpr std::array<u8, 256> instructionLengths = {
     3, 3, 2, 0, 0, 4, 2, 4, 4, 1, 4, 0, 0, 0, 2, 4,
     3, 3, 2, 1, 0, 4, 2, 4, 3, 2, 4, 1, 0, 0, 2, 4
 };
-};
+
 
 
 #endif // INSTRUCTIONLENGTHS_H_INCLUDED

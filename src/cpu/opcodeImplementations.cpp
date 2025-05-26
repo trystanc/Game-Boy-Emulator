@@ -24,7 +24,7 @@ u8 CPU::getn8(){ return m_ram[pc+1];}
 
 
 void CPU::NOP(){
-
+    return;
 }
 
 //load nstructions
@@ -34,7 +34,7 @@ void CPU::ld_r8_r8(Register& register1, Register& register2){
 }
 
 void CPU::ld_r8_n8(Register& r8){
-    register8Bit = getn8();
+    r8 = getn8();
 }
 
 void CPU::ld_r16_n16(RegisterPair& r16){
@@ -108,13 +108,25 @@ void CPU::ld_SP_n16(){
 }
 
 void CPU::ld_mn16_SP(){
-    n16 = getN16();
-    storeN16(n16, SP);
+    u16 n16 = getN16();
+    storeN16(n16, sp);
 }
 
 void CPU::ld_HL_SPe8(){
-    s8 e8 = reinterpret_cast<s8>(getn8());
+    u8 n8 = getn8();
 
+    s8 e8 = static_cast<s8>(n8);
+    int result = static_cast<int>(sp) + e8;
+    bool carry = ((sp &0xff) + (n8 & 0xff)) > 0xff;
+    bool halfCarry = ((sp & 0xf) + (n8 & 0xf)) > 0xf;
+    setFlags(false, false, halfCarry, carry);
+
+    HL = static_cast<u16>(result);
+
+}
+
+void CPU::ld_SP_HL(){
+    sp = HL;
 
 }
 

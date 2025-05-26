@@ -1,6 +1,7 @@
 #ifndef REGISTERPAIR_H_INCLUDED
 #define REGISTERPAIR_H_INCLUDED
 #include "../types.h"
+#include <iostream>
 
 //Defines pair of registers which holds reference to two
 // 8-bit registers. Contains reference to the two lower bits
@@ -8,9 +9,9 @@
 //integer which modifies the registers it holds a reference to.
 class RegisterPair{
     public:
-
-    u8& lo;
     u8& hi;
+    u8& lo;
+
 
    RegisterPair(u8& high, u8& low) : hi{high}, lo{low}{}
 
@@ -32,7 +33,7 @@ class RegisterPair{
     RegisterPair& operator--();
 
     friend std::ostream& operator<<(std::ostream& os, const RegisterPair& rp);
-}
+};
 
 
 #endif // REGISTERPAIR_H_INCLUDED

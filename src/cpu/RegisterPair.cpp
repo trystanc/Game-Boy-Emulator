@@ -20,7 +20,7 @@ u16 operator+(u16 num, RegisterPair rp){
 }
 
 RegisterPair& RegisterPair::operator++(){
-    *this = *this + 1;
+    *this = *this + static_cast<u16>(1);
     return *this;
 }
 
@@ -39,11 +39,11 @@ u16 operator-(u16 num, RegisterPair rp){
 }
 
 RegisterPair& RegisterPair::operator--(){
-    *this = *this - 1;
+    *this = *this - static_cast<u16>(1);
     return *this;
 }
 
-friend std::ostream& operator<<(std::ostream& os, const RegisterPair& rp) {
+std::ostream& operator<<(std::ostream& os, const RegisterPair& rp) {
     os << std::hex << static_cast<u16>(rp);
     return os;
 }
