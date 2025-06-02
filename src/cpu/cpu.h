@@ -76,6 +76,7 @@ public:
 
 //Function declarations for executing specific instructions.
  private:   
+ //helper functions
     u8 add8bit(const uint first, const uint second);
     u16 add16bit(const uint first, const uint second);
     void setn8(u8 value);
@@ -85,6 +86,7 @@ public:
     void storen8(u16 addr, u8 val);
     u16 SPe8();
     
+//Arithmetic instructions
     void adc_A_r8(Register r8);
     void adc_A_mHL();
     void adc_A_n8();
@@ -109,18 +111,8 @@ public:
     void scf();
     void sub_A(u8& value);
     void xor_A(u8& val);
-    
 
-
-
-
-
-
-
-
-
-
-
+//Load instructions
     void ld_r8_r8(Register& register1, Register& register2);
     void ld_r8_n8(Register& r8);
     void ld_r16_n16(RegisterPair& r16);
@@ -142,6 +134,10 @@ public:
     void ld_mn16_SP();
     void ld_HL_SPe8();
     void ld_SP_HL();
+    void pop(RegisterPair& r16);
+    void push_AF();
+    void push(RegisterPair& r16);
+
 
     
 

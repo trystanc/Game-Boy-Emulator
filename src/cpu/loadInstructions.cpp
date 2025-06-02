@@ -92,3 +92,27 @@ void CPU::ld_HL_SPe8(){
 void CPU::ld_SP_HL(){
     sp = HL;
 }
+
+void CPU::pop(RegisterPair& r16){
+
+    r16.lo = mem[sp];
+    ++sp;
+    r16.hi = mem[sp];
+    ++sp;
+}
+
+void CPU::push_AF(){
+
+    --sp;
+    mem[sp] = A;
+    --sp;
+    mem[sp] = F & 0xf0;;
+}
+
+void CPU::push_r16(RegisterPair& r16){
+
+    --sp;
+    mem[sp] = r16.hi;
+    --sp;
+    mem[sp] = r16.lo;
+}
