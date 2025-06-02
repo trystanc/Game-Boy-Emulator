@@ -3,6 +3,7 @@
 #include "../constants.h"
 #include "RegisterPair.h"
 #include "../types.h"
+#include "../addressBus/addressBus.h"
 //value stores the 16 bit integers of the
 //8 bit pairs.
 using Register = u8;
@@ -15,21 +16,34 @@ class CPU{
         HPos = 5,
         CPos = 4,
     };
-    std::array<u8, constants::ramSize>& m_ram;
-    Register A,F,B,C,D,E,H,L;
+    AddressBus& mem;
+
+//Value of Registers after boot sequence
+    Register A{0x01};
+    Register F {0xB0};
+    Register B{0x00};
+    Register C{0x13};
+    Register D{0x00};
+    Register E{0xD8};
+    Register H{0x01};
+    Register L{0x4D};
+    u16 pc {0x0100};
+    u16 sp {0xFFFE}; 
+
     RegisterPair AF;
     RegisterPair BC;
     RegisterPair DE;
     RegisterPair HL;
-    u16 pc;
-    u16 sp;
+
+    friend class RegisterPair;
+    friend class Debugger;
 
     bool getFlag(flagPosition pos) const {
         return (F >> pos) & 0x1;
     }
     void setFlag(flagPosition pos, bool val){
         auto value = static_cast<u8>(val);
-        F = (F & ~(1 << pos)) | (value << pos);
+        F = static_cast<u8>((F & ~(1u << pos)) | (value << pos));
     }
     bool Zflag() const {return getFlag(ZPos);}
     bool Nflag() const {return getFlag(NPos);}
@@ -40,12 +54,11 @@ class CPU{
     void setN(bool val) { setFlag(NPos, val); }
     void setH(bool val) { setFlag(HPos, val); }
     void setC(bool val) { setFlag(CPos, val); }
-    friend class RegisterPair;
-    friend class Debugger;
-
+//indicates if the last instruction was a branch instruction and was taken.
+    bool branched {false}; 
 public:
-   CPU(std::array<u8, constants::ramSize>& ram)
-        : m_ram(ram),
+   CPU(AddressBus& addressBus)
+        : mem(addressBus),
           AF(A, F),
           BC(B, C),
           DE(D, E),
@@ -59,17 +72,38 @@ public:
         setC(carry);
     }
 
-    void executeInstruction();
+    int executeInstruction();
 
 
-
-    
-    
-    
-    u16 getN16();
-    void storeN16(u16 addr, u16 val);
+//Function declarations for executing specific instructions.
+ private:   
+    u8 add8bit(const uint first, const uint second);
+    u16 add16bit(const uint first, const uint second);
+    void setn8(u8 value);
+    u16 getn16();
     u8 getn8();
-    void NOP();
+    void storen16(u16 addr, u16 val);
+    void storen8(u16 addr, u8 val);
+    u16 SPe8();
+    
+    void adc_A_r8(Register r8);
+    void adc_A_mHL();
+    void adc_A_n8();
+    void add_A_r8(Register r8);
+    void add_A_mHL();
+    void add_A_n8();
+    void add_HL_r16(RegisterPair& r16);
+    void add_SP_n8();
+    void add_HL_SP();
+    void add_SP_e8();
+
+
+
+
+
+
+
+
     void ld_r8_r8(Register& register1, Register& register2);
     void ld_r8_n8(Register& r8);
     void ld_r16_n16(RegisterPair& r16);
@@ -91,5 +125,6 @@ public:
     void ld_mn16_SP();
     void ld_HL_SPe8();
     void ld_SP_HL();
+    void NOP();
 };
 

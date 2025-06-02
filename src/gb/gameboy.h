@@ -6,17 +6,17 @@
 #include <ios>
 #include "../constants.h"
 #include "../types.h"
+#include "../cartridge/cartridge.h"
+#include "../addressBus/addressBus.h"
 
 class GameBoy {
+
+    Cartridge m_cartridge;
+    AddressBus m_addressBus;
+
+public:
     CPU m_cpu;
-    std::array<u8, constants::ramSize> ram;
-
-    public:
-    GameBoy() : ram{}, m_cpu(ram) {
-        
-    }
-
-    void loadRom(std::ifstream& file);
+    GameBoy(std::ifstream & file);
 
 };
 

@@ -7,6 +7,12 @@ RegisterPair& RegisterPair::operator= (u16 num){
     return *this;
 }
 
+RegisterPair& RegisterPair::operator= (RegisterPair rp){
+    lo = rp.lo;
+    hi = rp.hi;
+    return *this;
+}
+
 u16 operator+(RegisterPair rp, u16 num){
     return static_cast<u16>(rp) + num;
 }
@@ -20,7 +26,7 @@ u16 operator+(u16 num, RegisterPair rp){
 }
 
 RegisterPair& RegisterPair::operator++(){
-    *this = *this + static_cast<u16>(1);
+    *this = static_cast<u16>(*this) + static_cast<u16>(1);
     return *this;
 }
 
@@ -39,7 +45,7 @@ u16 operator-(u16 num, RegisterPair rp){
 }
 
 RegisterPair& RegisterPair::operator--(){
-    *this = *this - static_cast<u16>(1);
+    *this = static_cast<u16>(*this) - static_cast<u16>(1);
     return *this;
 }
 
