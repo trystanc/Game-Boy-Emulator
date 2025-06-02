@@ -4,8 +4,7 @@
 #include "RegisterPair.h"
 #include "../types.h"
 #include "../addressBus/addressBus.h"
-//value stores the 16 bit integers of the
-//8 bit pairs.
+
 using Register = u8;
 
 class CPU{
@@ -96,6 +95,24 @@ public:
     void add_SP_n8();
     void add_HL_SP();
     void add_SP_e8();
+    void and_A(u8& val);
+    void ccf();
+    void cp_A(u8& val);
+    void cpl();
+    void daa();
+    void dec8bit(u8& value);
+    void dec16bit(RegisterPair& r16);
+    void inc8bit(u8& value);
+    void inc16bit(RegisterPair& r16);
+    void or_A(u8& val);
+    void sbc_A(u8& value);
+    void scf();
+    void sub_A(u8& value);
+    void xor_A(u8& val);
+    
+
+
+
 
 
 
@@ -125,6 +142,15 @@ public:
     void ld_mn16_SP();
     void ld_HL_SPe8();
     void ld_SP_HL();
+
+    
+
     void NOP();
+    
 };
 
+//helper function for the CPU instruction classes
+ inline u16 convertLittleEndian(u8 firstByte, u8 secondByte){
+    return (firstByte | static_cast<u16>(secondByte) << 8);
+
+}
