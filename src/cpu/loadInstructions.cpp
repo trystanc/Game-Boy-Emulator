@@ -76,6 +76,9 @@ void CPU::ld_A_mHLi(){
     ++HL;
 }
 
+void CPU::ld_A_mn16(){
+    A = mem[getn16()];
+}
 void CPU::ld_SP_n16(){
     sp = getn16();
 }
@@ -93,7 +96,7 @@ void CPU::ld_SP_HL(){
     sp = HL;
 }
 
-void CPU::pop(RegisterPair& r16){
+void CPU::pop_r16(RegisterPair& r16){
 
     r16.lo = mem[sp];
     ++sp;
@@ -106,7 +109,7 @@ void CPU::push_AF(){
     --sp;
     mem[sp] = A;
     --sp;
-    mem[sp] = F & 0xf0;;
+    mem[sp] = F & 0xf0;
 }
 
 void CPU::push_r16(RegisterPair& r16){

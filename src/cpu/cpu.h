@@ -28,6 +28,8 @@ class CPU{
     Register L{0x4D};
     u16 pc {0x0100};
     u16 sp {0xFFFE}; 
+    bool ime {false};
+    bool imePending{false};
 
     RegisterPair AF;
     RegisterPair BC;
@@ -35,7 +37,7 @@ class CPU{
     RegisterPair HL;
 
     friend class RegisterPair;
-    friend class Debugger;
+    friend class CPULogger;
 
     bool getFlag(flagPosition pos) const {
         return (F >> pos) & 0x1;
@@ -54,7 +56,7 @@ class CPU{
     void setH(bool val) { setFlag(HPos, val); }
     void setC(bool val) { setFlag(CPos, val); }
 //indicates if the last instruction was a branch instruction and was taken.
-    bool branched {false}; 
+    bool jumped {false}; 
 public:
    CPU(AddressBus& addressBus)
         : mem(addressBus),
@@ -74,9 +76,12 @@ public:
     int executeInstruction();
 
 
-//Function declarations for executing specific instructions.
+//Instruction Implementations
  private:   
  //helper functions
+    void implementOpcode(u8 opcode);
+    void implementCBOpcode();
+    void applyPendingIME();
     u8 add8bit(const uint first, const uint second);
     u16 add16bit(const uint first, const uint second);
     void setn8(u8 value);
@@ -87,10 +92,10 @@ public:
     u16 SPe8();
     
 //Arithmetic instructions
-    void adc_A_r8(Register r8);
+    void adc_A_r8(Register& r8);
     void adc_A_mHL();
     void adc_A_n8();
-    void add_A_r8(Register r8);
+    void add_A_r8(Register& r8);
     void add_A_mHL();
     void add_A_n8();
     void add_HL_r16(RegisterPair& r16);
@@ -104,8 +109,10 @@ public:
     void daa();
     void dec8bit(u8& value);
     void dec16bit(RegisterPair& r16);
+    void dec16bit(u16& value);
     void inc8bit(u8& value);
     void inc16bit(RegisterPair& r16);
+    void inc16bit(u16& value);
     void or_A(u8& val);
     void sbc_A(u8& value);
     void scf();
@@ -130,18 +137,64 @@ public:
     void ld_mHLd_A();
     void ld_A_mHLd();
     void ld_A_mHLi();
+    void ld_A_mn16();
     void ld_SP_n16();
     void ld_mn16_SP();
     void ld_HL_SPe8();
     void ld_SP_HL();
-    void pop(RegisterPair& r16);
+    void pop_r16(RegisterPair& r16);
     void push_AF();
-    void push(RegisterPair& r16);
+    void push_r16(RegisterPair& r16);
 
+//Jump and Call instructions
+    void call_n16();
+    void call_cc_n16(bool condition);
+    void jp_n16();
+    void jp_cc_n16(bool condition);
+    void jp_HL();
+    void jr_n16();
+    void jr_cc_n16(bool condition);
+    void ret();
+    void ret_cc(bool condition);
+    void reti();
+    void rst(u8 vector);
 
     
+//miscellaneous instructions
+    void di();
+    void ei();
+    void nop();
+    void halt();
+    void stop();
 
-    void NOP();
+//Bit instructions
+    void bit_u3_r8(u8 bit, Register& value);
+    void bit_u3_mHL(u8 bitPos);
+    void res_u3_r8(u8 bitPos, Register& value);
+    void res_u3_mHL(u8 bitPos);
+    void rl_r8(u8& value);
+    void rl_mHL();
+    void rl_A();
+    void rlc_r8(u8& value);
+    void rlc_mHL();
+    void rlc_A();
+    void rr_r8(u8& value);
+    void rr_mHL();
+    void rr_A();
+    void rrc_r8(u8& value);
+    void rrc_mHL();
+    void rrc_A();
+    void set_u3_r8(u8 bitPos, Register& value);
+    void set_u3_mHL(u8 bitPos);
+    void sla_r8(u8& value);
+    void sla_mHL();
+    void sra_r8(u8& value);
+    void sra_mHL();
+    void srl_r8(u8& value);
+    void srl_mHL();
+    void swap_r8(u8& value);
+    void swap_mHL();
+
     
 };
 

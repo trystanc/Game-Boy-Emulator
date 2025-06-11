@@ -32,7 +32,7 @@ u16 CPU::SPe8(){
 
 
 
-void CPU::adc_A_r8(Register r8){
+void CPU::adc_A_r8(Register& r8){
     A = add8bit(A, r8 + Cflag());
 }
 
@@ -41,10 +41,10 @@ void CPU::adc_A_mHL(){
 }
 
 void CPU::adc_A_n8(){
-    A += static_cast<u8>(getn8() + static_cast<u8>(Cflag()));
+    A += add8bit(A, getn8() + Cflag());
 }
 
-void CPU::add_A_r8(Register r8){
+void CPU::add_A_r8(Register& r8){
     A = add8bit(A, r8);
 }
 
@@ -136,6 +136,10 @@ void CPU::dec16bit(RegisterPair& r16){
     --r16;
 }
 
+void CPU::dec16bit(u16& value){
+    --value;
+}
+
 void CPU::inc8bit(u8& value){
     bool zero = (value == 0xff);
     bool halfCarry = ((value & 0xf) == 0x0f);
@@ -145,6 +149,10 @@ void CPU::inc8bit(u8& value){
 
 void CPU::inc16bit(RegisterPair& r16){
     ++r16;
+}
+
+void CPU::inc16bit(u16& value){
+    ++value;
 }
 
 void CPU::or_A(u8& val){
@@ -175,6 +183,7 @@ void CPU::sub_A(u8& value){
     setFlags(zero, true, halfCarry, carry);
     A = static_cast<u8>(result);
 }
+
 
 void CPU::xor_A(u8& val){
     A ^= val;

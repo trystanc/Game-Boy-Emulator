@@ -1,7 +1,7 @@
 // #include "gb/gameboy.h"
 // #include <fstream>
 #include <iostream>
-void runCartridgeTests();
+
 int main(){
  
     return 0;
