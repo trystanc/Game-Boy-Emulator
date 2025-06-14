@@ -16,9 +16,10 @@ u16 CPU::add16bit(const uint first, const uint second){
     u16 result = static_cast<u16>(first) + static_cast<u16>(second);
     bool halfCarry = ((first & 0xfff) + (second & 0xfff)) > 0xfff;
     bool carry = ((first & 0xffff) + (second & 0xffff)) > 0xffff;
-    setFlags(Cflag(), false, halfCarry, carry);
+    setFlags(Zflag(), false, halfCarry, carry);
     return result;
 }
+
 
 u16 CPU::SPe8(){
     u8 n8 = getn8();
@@ -41,7 +42,8 @@ void CPU::adc_A_mHL(){
 }
 
 void CPU::adc_A_n8(){
-    A += add8bit(A, getn8() + Cflag());
+    
+    A = add8bit(A, getn8() + Cflag());
 }
 
 void CPU::add_A_r8(Register& r8){
@@ -58,6 +60,8 @@ void CPU::add_A_n8(){
 
 void CPU::add_HL_r16(RegisterPair& r16){
     HL = add16bit(HL, r16);
+
+
 }
 
 void CPU::add_HL_SP(){
@@ -94,42 +98,39 @@ void CPU::cpl(){
     setFlags(Zflag(), true, true, Cflag());
 }
 
-void CPU::daa(){
-    u8 adjust = 0;
-    s16 result;
-    bool carry;
-    if(Nflag()) {
 
-        if(Hflag()){
-            adjust += 0x6;
-        }
-        if(Cflag()){
-            adjust += 0x60;
-        }
-        result = static_cast<s16>(A) - static_cast<s16>(adjust);
-        carry = (result < 0);
+void CPU::daa() {
+    u8 correction = 0;
+    bool carry = false;
 
+    if (!Nflag()) {
+        if (Cflag() || A > 0x99) {
+            correction |= 0x60;
+            carry = true;
+        }
+        if (Hflag() || (A & 0x0F) > 0x09) {
+            correction |= 0x06;
+        }
+        A += correction;
+    } else {
+        if (Cflag()) {
+            correction |= 0x60;
+        }
+        if (Hflag()) {
+            correction |= 0x06;
+        }
+        A -= correction;
+        carry = Cflag();
     }
-    else{
 
-        if(Hflag() || ((A & 0xf) > 0x9)){
-            adjust += 0x6;
-        }
-        if(Cflag() || A > 0x99){
-            adjust += 0x60;
-        }
-        result = static_cast<s16>(A) + static_cast<s16>(adjust);
-        carry = (result > 0xff);
-    }
-    bool zero {result == 0};
-    setFlags(zero, Nflag(), false, carry);
+    setFlags(A == 0, Nflag(), false, carry);
 }
 
 void CPU::dec8bit(u8& value){
     bool zero = (value == 0x1);
     bool halfCarry = ((value & 0xf) == 0);
     --value;
-    setFlags(zero, Nflag(), halfCarry, Cflag());
+    setFlags(zero, true, halfCarry, Cflag());
 }
 
 void CPU::dec16bit(RegisterPair& r16){

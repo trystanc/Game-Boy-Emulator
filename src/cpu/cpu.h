@@ -8,7 +8,7 @@
 using Register = u8;
 
 class CPU{
-
+protected: //variables protected instead of private for testing purposes.
     enum flagPosition{
         ZPos = 7,
         NPos = 6,
@@ -37,7 +37,7 @@ class CPU{
     RegisterPair HL;
 
     friend class RegisterPair;
-    friend class CPULogger;
+
 
     bool getFlag(flagPosition pos) const {
         return (F >> pos) & 0x1;
@@ -142,6 +142,7 @@ public:
     void ld_mn16_SP();
     void ld_HL_SPe8();
     void ld_SP_HL();
+    void pop_AF();
     void pop_r16(RegisterPair& r16);
     void push_AF();
     void push_r16(RegisterPair& r16);

@@ -96,6 +96,12 @@ void CPU::ld_SP_HL(){
     sp = HL;
 }
 
+void CPU::pop_AF(){
+
+    pop_r16(AF);
+    F &= 0xf0;
+}
+
 void CPU::pop_r16(RegisterPair& r16){
 
     r16.lo = mem[sp];

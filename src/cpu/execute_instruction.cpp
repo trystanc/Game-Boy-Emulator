@@ -11,7 +11,6 @@ int CPU::executeInstruction(){
 // it will be set to true if the instruction was a branch instruction and was taken.
     jumped = false;
     u8 opcode = mem[pc];
-    
     implementOpcode(opcode);
 
     if (jumped) return opcodeCyclesJumped[opcode];
@@ -264,7 +263,7 @@ void CPU::implementOpcode(u8 opcode){
         case 0xEE: xor_A(mem[pc+1]); break;
         case 0xEF: rst(0x28); break;
         case 0xF0: ldh_A_mn16(); break;
-        case 0xF1: pop_r16(AF); break;
+        case 0xF1: pop_AF(); break;
         case 0xF2: ldh_A_mC(); break;
         case 0xF3: di(); break;
         case 0xF4: break; // Unimplemented opcode
@@ -284,6 +283,7 @@ void CPU::implementOpcode(u8 opcode){
 
 void CPU::implementCBOpcode(){
     u8 opcode = mem[pc+1];
+
     switch(opcode){
         case 0x00: rlc_r8(B); break;
         case 0x01: rlc_r8(C); break;

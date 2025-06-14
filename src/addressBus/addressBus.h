@@ -15,7 +15,7 @@ public:
     Array<constants::hRamSize> hRam;
     AddressBus(Cartridge& cart)
         : cartridge(cart), vram{}, wram{}, oam{}, ioRegisters{}, hRam{} {}
-    u8& operator[](u16 address);
+    virtual u8& operator[](u16 address);
 
 
         
