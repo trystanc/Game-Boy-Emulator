@@ -8,6 +8,26 @@
 using Register = u8;
 
 class CPU{
+
+public:
+   CPU(AddressBus& addressBus)
+        : mem(addressBus),
+          AF(A, F),
+          BC(B, C),
+          DE(D, E),
+          HL(H, L) {}
+
+
+    void setFlags(bool zero, bool arithmetic, bool halfCarry, bool carry){
+        setZ(zero);
+        setN(arithmetic);
+        setH(halfCarry);
+        setC(carry);
+    }
+    int mainLoop();
+    int executeInstruction();
+    void applyPendingIME();
+
 protected: //variables protected instead of private for testing purposes.
     enum flagPosition{
         ZPos = 7,
@@ -37,7 +57,7 @@ protected: //variables protected instead of private for testing purposes.
     RegisterPair HL;
 
     friend class RegisterPair;
-
+    
 
     bool getFlag(flagPosition pos) const {
         return (F >> pos) & 0x1;
@@ -55,25 +75,11 @@ protected: //variables protected instead of private for testing purposes.
     void setN(bool val) { setFlag(NPos, val); }
     void setH(bool val) { setFlag(HPos, val); }
     void setC(bool val) { setFlag(CPos, val); }
+
+    int serviceInterrupts();
 //indicates if the last instruction was a branch instruction and was taken.
     bool jumped {false}; 
-public:
-   CPU(AddressBus& addressBus)
-        : mem(addressBus),
-          AF(A, F),
-          BC(B, C),
-          DE(D, E),
-          HL(H, L) {}
 
-
-    void setFlags(bool zero, bool arithmetic, bool halfCarry, bool carry){
-        setZ(zero);
-        setN(arithmetic);
-        setH(halfCarry);
-        setC(carry);
-    }
-
-    int executeInstruction();
 
 
 //Instruction Implementations
@@ -81,7 +87,7 @@ public:
  //helper functions
     void implementOpcode(u8 opcode);
     void implementCBOpcode();
-    void applyPendingIME();
+
     u8 add8bit(const uint first, const uint second);
     u16 add16bit(const uint first, const uint second);
     void setn8(u8 value);
@@ -199,7 +205,7 @@ public:
     
 };
 
-//helper function for the CPU instruction classes
+//helper function for the CPU instructions
  inline u16 convertLittleEndian(u8 firstByte, u8 secondByte){
     return (firstByte | static_cast<u16>(secondByte) << 8);
 

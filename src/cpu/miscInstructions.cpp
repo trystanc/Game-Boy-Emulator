@@ -15,6 +15,7 @@ void CPU::halt(){
 
 void CPU::stop(){
     //placeholder for stop instruction
+    mem[constants::DIVaddress] = 0;
 }
 
 void CPU::nop(){

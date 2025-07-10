@@ -8,14 +8,15 @@
 #include "../types.h"
 #include "../cartridge/cartridge.h"
 #include "../addressBus/addressBus.h"
+#include "time.h"
 
 class GameBoy {
 
-    Cartridge m_cartridge;
-    AddressBus m_addressBus;
-
+    Cartridge cartridge;
+    AddressBus addressBus;
+    CPU cpu;
 public:
-    CPU m_cpu;
+
     GameBoy(std::ifstream & file);
 
 };

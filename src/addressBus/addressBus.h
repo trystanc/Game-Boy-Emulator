@@ -7,6 +7,7 @@
 class AddressBus{
 
 public:
+    u8 garbage{0}; // Sentinel object to prevent access or write to memory when forbidden - e.g. LY register.
     Cartridge& cartridge;
     Array<constants::vramSize> vram;
     Array<constants::wramSize> wram;
@@ -16,7 +17,4 @@ public:
     AddressBus(Cartridge& cart)
         : cartridge(cart), vram{}, wram{}, oam{}, ioRegisters{}, hRam{} {}
     virtual u8& operator[](u16 address);
-
-
-        
 };

@@ -10,8 +10,11 @@ int CPU::executeInstruction(){
 //reset the branched flag from last instruction, 
 // it will be set to true if the instruction was a branch instruction and was taken.
     jumped = false;
+    u8 prevDIV {mem[constants::DIVaddress]};
     u8 opcode = mem[pc];
     implementOpcode(opcode);
+
+    if (mem[constants::DIVaddress] != prevDIV) mem[constants::DIVaddress] = 0;
 
     if (jumped) return opcodeCyclesJumped[opcode];
     else{

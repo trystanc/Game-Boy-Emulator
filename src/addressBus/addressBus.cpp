@@ -30,22 +30,28 @@ u8& AddressBus::operator[](u16 address) {
               throw std::out_of_range("Access to forbidden address attempted.");
               return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.            
         case 0xF:
+
+
             if (address >= constants::hRamStart) {
                 return hRam[address - constants::hRamStart];
             }
             else if (address >= constants::ioRegistersStart) {
+                if (address == 0xFF04){
+                    bool divAccessed {true};
+                    
+                }
                 return ioRegisters[address - constants::ioRegistersStart];
-            } 
-            else if ( address >= constants::oamStart && address < constants::forbiddenStart) {
+            }
+            else if (address >= constants::oamStart && address < constants::forbiddenStart) {
                 return oam[address - constants::oamStart];
             } 
             else {
               throw std::out_of_range("Access to forbidden address attempted.");
-              return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.
+              return garbage; // This line will never be reached, but is needed to avoid compiler warnings.
             }
         default:
             throw std::out_of_range("Address out of range.");
-            return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.
+            return garbage; // This line will never be reached, but is needed to avoid compiler warnings.
 
     }
 
