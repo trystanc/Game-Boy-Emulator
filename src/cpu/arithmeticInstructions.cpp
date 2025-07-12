@@ -72,12 +72,12 @@ void CPU::add_SP_e8(){
     sp = SPe8();
 }
 
-void CPU::and_A(u8& val){
+void CPU::and_A(u8 val){
     A &= val;
     bool zero = (A == 0);
     setFlags(zero, false, true, false);
 }
- void CPU::cp_A(u8& val){
+ void CPU::cp_A(u8 val){
     s16 result = static_cast<s16>(A) - static_cast<s16>(val);
     bool zero = (result == 0);
     bool carry = (result < 0);
@@ -133,6 +133,14 @@ void CPU::dec8bit(u8& value){
     setFlags(zero, true, halfCarry, Cflag());
 }
 
+u8 CPU::dec8bit_mHL(u8 value){
+    bool zero = (value == 0x1);
+    bool halfCarry = ((value & 0xf) == 0);
+    --value;
+    setFlags(zero, true, halfCarry, Cflag());
+    return value;
+}
+
 void CPU::dec16bit(RegisterPair& r16){
     --r16;
 }
@@ -148,6 +156,14 @@ void CPU::inc8bit(u8& value){
     setFlags(zero, false, halfCarry, Cflag());
 }
 
+u8 CPU::inc8bit_mHL(u8 value){
+    bool zero = (value == 0xff);
+    bool halfCarry = ((value & 0xf) == 0x0f);
+    ++value;
+    setFlags(zero, false, halfCarry, Cflag());
+    return value;
+}
+
 void CPU::inc16bit(RegisterPair& r16){
     ++r16;
 }
@@ -156,13 +172,13 @@ void CPU::inc16bit(u16& value){
     ++value;
 }
 
-void CPU::or_A(u8& val){
+void CPU::or_A(u8 val){
     A |= val;
     bool zero = (A == 0);
     setFlags(zero, false, false, false);
 }
 
-void CPU::sbc_A(u8& value){
+void CPU::sbc_A(u8 value){
     u8 subtrahend = value + Cflag();
     s16 result = static_cast<s16>(A) - static_cast<s16>(subtrahend);
     bool zero = (result == 0);
@@ -176,7 +192,7 @@ void CPU::scf(){
     setFlags(Zflag(), false, false, true);
 }
 
-void CPU::sub_A(u8& value){
+void CPU::sub_A(u8 value){
     s16 result = static_cast<s16>(A) - static_cast<s16>(value);
     bool zero = (result == 0);
     bool carry = (result < 0);
@@ -186,7 +202,7 @@ void CPU::sub_A(u8& value){
 }
 
 
-void CPU::xor_A(u8& val){
+void CPU::xor_A(u8 val){
     A ^= val;
     bool zero = (A == 0);
     setFlags(zero, false, false, false);

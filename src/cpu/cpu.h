@@ -108,22 +108,24 @@ protected: //variables protected instead of private for testing purposes.
     void add_SP_n8();
     void add_HL_SP();
     void add_SP_e8();
-    void and_A(u8& val);
+    void and_A(u8 val);
     void ccf();
-    void cp_A(u8& val);
+    void cp_A(u8 val);
     void cpl();
     void daa();
     void dec8bit(u8& value);
+    u8 dec8bit_mHL(u8 value);
     void dec16bit(RegisterPair& r16);
     void dec16bit(u16& value);
     void inc8bit(u8& value);
+    u8 inc8bit_mHL(u8 value);
     void inc16bit(RegisterPair& r16);
     void inc16bit(u16& value);
-    void or_A(u8& val);
-    void sbc_A(u8& value);
+    void or_A(u8 val);
+    void sbc_A(u8 value);
     void scf();
-    void sub_A(u8& value);
-    void xor_A(u8& val);
+    void sub_A(u8 value);
+    void xor_A(u8 val);
 
 //Load instructions
     void ld_r8_r8(Register& register1, Register& register2);
@@ -175,7 +177,7 @@ protected: //variables protected instead of private for testing purposes.
     void stop();
 
 //Bit instructions
-    void bit_u3_r8(u8 bit, Register& value);
+    void bit_u3_r8(u8 bit, Register value);
     void bit_u3_mHL(u8 bitPos);
     void res_u3_r8(u8 bitPos, Register& value);
     void res_u3_mHL(u8 bitPos);

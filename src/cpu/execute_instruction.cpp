@@ -77,8 +77,8 @@ void CPU::implementOpcode(u8 opcode){
         case 0x31: ld_SP_n16(); break;
         case 0x32: ld_mHLd_A(); break;
         case 0x33: inc16bit(sp); break;
-        case 0x34: inc8bit(mem[HL]); break;
-        case 0x35: dec8bit(mem[HL]); break;
+        case 0x34: mem[HL] = inc8bit_mHL(mem[HL]); break;
+        case 0x35: mem[HL] = dec8bit_mHL(mem[HL]); break;
         case 0x36: ld_mr16_n8(HL); break;
         case 0x37: scf(); break;
         case 0x38: jr_cc_n16(Cflag()); break;

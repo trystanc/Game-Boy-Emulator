@@ -47,12 +47,18 @@ private:
     u8 fixedValue {0x90};
 public:
     AddressBusDebugMode(Cartridge& cart) : AddressBus(cart) {}
-    u8& operator[](u16 address) override{
-        if (address == 0xff44){
+    u8 read(u16 address) override {
+        if (address == 0xff44) {
             return fixedValue;
+        } else {
+            return AddressBus::read(address);
         }
-        else{
-            return AddressBus::operator[](address);
+    }
+    void write(u16 address, u8 value) override {
+        if (address == 0xff44) {
+            return;
+        } else {
+            AddressBus::write(address, value);
         }
     }
 
