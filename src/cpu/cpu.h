@@ -24,7 +24,7 @@ public:
         setH(halfCarry);
         setC(carry);
     }
-    int mainLoop();
+    int runCycles();
     int executeInstruction();
     void applyPendingIME();
 

@@ -48,4 +48,6 @@ namespace constants{
     constexpr u16 maxSpritesPerFrame {40}; //maximum number of sprites that can be drawn on a single frame, this is a hardware limitation
     constexpr u8 maxRGBvalue {255}; //maximum value for RGB components, used for the frame buffer
     constexpr u16 signedAddressStart {0x8800}; //start of the signed address space for tile data, used for 8x16 sprites
+    constexpr uint cyclesPerLine {456};
+    constexpr uint cyclesUntilVBlank{65664};
 }

@@ -36,10 +36,7 @@ u8 AddressBus::read(u16 address) {
                 return hRam[address - constants::hRamStart];
             }
             else if (address >= constants::ioRegistersStart) {
-                if (address == 0xFF04){
-                    bool divAccessed {true};
-                    
-                }
+
                 return ioRegisters[address - constants::ioRegistersStart];
             }
             else if (address >= constants::oamStart && address < constants::forbiddenStart) {
