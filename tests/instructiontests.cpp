@@ -74,7 +74,7 @@ TEST_CASE("Generate log files for Gameboy Doctor - rom 1"){
     CPULogger cpu(addressBus);
     cpu.createLogFile("./tests/outputs/01.txt");
     for(int i{0}; i<2e6; ++i){
-        cpu.executeInstruction();
+        cpu.tick();
         cpu.logState();
     }
 

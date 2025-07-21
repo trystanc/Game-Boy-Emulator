@@ -1,20 +1,28 @@
 #include "cpu.h"
 #include "opcodeData.h"
 #include "../types.h"
-/* Executes non-CB functions. Resets the branched flag before executing the instruction. 
-This may be modified by the instruction.  If the instruction involes a conditional jump instruction and 
-it was taken, the flag will be set to true. Affects the number of cycles the instruction 
-takes to execute and hence the return value of this function.*/
+
+void CPU::tick(){
+    bool interruptOccured = handleInterrupts();
+    if(interruptOccured){
+        mediator->advanceState(constants::interruptCycleLength);
+        return;
+    }
+    int cycles = executeInstruction();
+    mediator->advanceState(cycles);
+    return;
+}
+
 int CPU::executeInstruction(){
 
 //reset the branched flag from last instruction, 
 // it will be set to true if the instruction was a branch instruction and was taken.
     jumped = false;
-    u8 prevDIV {mem[constants::DIVaddress]};
+    u8 prevDIV {mem[constants::DIVAddress]};
     u8 opcode = mem[pc];
     implementOpcode(opcode);
 
-    if (mem[constants::DIVaddress] != prevDIV) mem[constants::DIVaddress] = 0;
+    if (mem[constants::DIVAddress] != prevDIV) mem[constants::DIVAddress] = 0;
 
     if (jumped) return opcodeCyclesJumped[opcode];
     else{

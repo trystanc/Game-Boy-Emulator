@@ -19,9 +19,3 @@ void CPU::storen8(u16 addr, u8 val){
     mem[addr] = val;
 }
 
-void CPU::applyPendingIME(){
-    if(imePending){
-        ime = true;
-        imePending = false;
-    }
-}

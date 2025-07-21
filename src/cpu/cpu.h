@@ -4,11 +4,11 @@
 #include "RegisterPair.h"
 #include "../types.h"
 #include "../addressBus/addressBus.h"
+#include "../gb/mediator.h"
 
 using Register = u8;
-
+class Gameboy;
 class CPU{
-
 public:
    CPU(AddressBus& addressBus)
         : mem(addressBus),
@@ -24,9 +24,12 @@ public:
         setH(halfCarry);
         setC(carry);
     }
-    int runCycles();
-    int executeInstruction();
-    void applyPendingIME();
+    void tick();
+
+    void setMediator(Mediator* _mediator){
+        mediator = _mediator;
+    }
+
 
 protected: //variables protected instead of private for testing purposes.
     enum flagPosition{
@@ -36,7 +39,6 @@ protected: //variables protected instead of private for testing purposes.
         CPos = 4,
     };
     AddressBus& mem;
-
 //Value of Registers after boot sequence
     Register A{0x01};
     Register F {0xB0};
@@ -55,7 +57,6 @@ protected: //variables protected instead of private for testing purposes.
     RegisterPair BC;
     RegisterPair DE;
     RegisterPair HL;
-
     friend class RegisterPair;
     
 
@@ -79,11 +80,11 @@ protected: //variables protected instead of private for testing purposes.
     int serviceInterrupts();
 //indicates if the last instruction was a branch instruction and was taken.
     bool jumped {false}; 
-
-
-
+    Mediator* mediator;
 //Instruction Implementations
  private:   
+    bool handleInterrupts();
+    int executeInstruction();
  //helper functions
     void implementOpcode(u8 opcode);
     void implementCBOpcode();
