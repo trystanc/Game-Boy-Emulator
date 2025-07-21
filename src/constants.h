@@ -7,12 +7,7 @@ namespace constants{
     constexpr int mCycleTimeNs = static_cast<int>(1e9/masterHz);
     constexpr int sCycleTimeNs = static_cast<int>(1e9/systemHz);
     constexpr int cyclesPerFrame{70224};
-    constexpr u16 DIVaddress{0xFF04};
-    constexpr u16 TIMAaddress{0xFF05};
-    constexpr u16 TMAaddress{0xFF06};
-    constexpr u16 TACaddress{0xFF07};
-    constexpr u16 interruptFlagAddress{0xFF0F};
-    constexpr u16 interruptEnableAddress{0xFFFF};
+
 
 //memory sizes
     constexpr u16 vramSize {8192};
@@ -30,7 +25,21 @@ namespace constants{
     constexpr u16 ioRegistersStart {0xFF00};
     constexpr u16 hRamStart {0xFF80};
     constexpr u16 endOfMemory {0xFFFF};
-    constexpr u16 LYAddress {0xFF44};
+//Interrupt related constants
+    constexpr u16 interruptFlagAddress{0xFF0F};
+    constexpr u16 interruptEnableAddress{0xFFFF};
+    constexpr u16 VBlankInterruptAddress{0x0040};
+    constexpr u16 STATInterruptAddress{0x0048};
+    constexpr u16 TimerInterruptAddress{0x0050};
+    constexpr u16 SerialInterruptAddress{0x0058};
+    constexpr u16 JoypadInterruptAddress{0x0060};
+    constexpr int interruptCycleLength{5};
+
+//Timer related registers
+    constexpr u16 DIVAddress{0xFF04};
+    constexpr u16 TIMAAddress{0xFF05};
+    constexpr u16 TMAAddress{0xFF06};
+    constexpr u16 TACAddress{0xFF07};
 
 //PPU related constants
     constexpr int screenx {160};
@@ -50,4 +59,5 @@ namespace constants{
     constexpr u16 signedAddressStart {0x8800}; //start of the signed address space for tile data, used for 8x16 sprites
     constexpr uint cyclesPerLine {456};
     constexpr uint cyclesUntilVBlank{65664};
+    constexpr u16 LYAddress{0xFF44};
 }

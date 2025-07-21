@@ -44,11 +44,11 @@ u8 AddressBus::read(u16 address) {
             } 
             else {
               throw std::out_of_range("Access to forbidden address attempted.");
-              return garbage; // This line will never be reached, but is needed to avoid compiler warnings.
+              return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.
             }
         default:
             throw std::out_of_range("Address out of range.");
-            return garbage; // This line will never be reached, but is needed to avoid compiler warnings.
+            return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.
 
     }
 
@@ -99,4 +99,13 @@ void AddressBus::write(u16 address, u8 value) {
     }
 
 }
+
+void AddressBus::requestInterrupt(Interrupt interrupt){
+    ioRegisters[constants::interruptFlagAddress - constants::ioRegistersStart] |= (0b1 << (static_cast<int>(interrupt))); 
+}
+
+void AddressBus::setMediator(Mediator* _mediator){
+    mediator = _mediator;
+}
+
 

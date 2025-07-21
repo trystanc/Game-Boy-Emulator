@@ -6,13 +6,7 @@ GameBoy::GameBoy(std::ifstream &file)
     : cartridge(file),
       addressBus(cartridge),
       cpu(addressBus),
-      ppu(addressBus)
-
+      timerHandler(addressBus),
+      mediator(cpu, cartridge, addressBus, timerHandler)
 {
-}
-
-void GameBoy::runCycles(){
-  int cycles = cpu.runCycles();
-  ppu.runCycles(cycles);
-
 }

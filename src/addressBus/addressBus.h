@@ -3,7 +3,7 @@
 #include "../types.h"
 #include "../constants.h"
 #include "../cartridge/cartridge.h"
-
+#include "../gb/mediator.h"
 class AddressBus{
     struct Proxy{
         AddressBus& mem;
@@ -14,7 +14,7 @@ class AddressBus{
     };
 
 public:
-    u8 garbage{0}; // Sentinel object to prevent access or write to memory when forbidden - e.g. LY register.
+    Mediator* mediator;
     Cartridge& cartridge;
     Array<constants::vramSize> vram;
     Array<constants::wramSize> wram;
@@ -29,6 +29,8 @@ public:
     }
     virtual u8 read(u16 address);
     virtual void write(u16 address, u8 value);
+    void setMediator(Mediator* _mediator);
+    void requestInterrupt(Interrupt interrupt);
 
         
 };
