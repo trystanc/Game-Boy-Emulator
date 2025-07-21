@@ -24,4 +24,22 @@ namespace constants{
     constexpr u16 endOfMemory {0xFFFF};
 
 
+//Interrupt related constants
+    constexpr u16 interruptFlagAddress{0xFF0F};
+    constexpr u16 interruptEnableAddress{0xFFFF};
+    constexpr u16 VBlankInterruptAddress{0x0040};
+    constexpr u16 STATInterruptAddress{0x0048};
+    constexpr u16 TimerInterruptAddress{0x0050};
+    constexpr u16 SerialInterruptAddress{0x0058};
+    constexpr u16 JoypadInterruptAddress{0x0060};
+    constexpr int interruptCycleLength{5};
+
+//Timer related registers
+    constexpr u16 DIVAddress{0xFF04};
+    constexpr u16 TIMAAddress{0xFF05};
+    constexpr u16 TMAAddress{0xFF06};
+    constexpr u16 TACAddress{0xFF07};
+
+
+
 }

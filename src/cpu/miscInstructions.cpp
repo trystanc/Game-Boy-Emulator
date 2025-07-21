@@ -1,5 +1,4 @@
 #include "cpu.h"
-#include "../types.h"
 
 void CPU::di(){
     ime = false;
@@ -14,11 +13,11 @@ void CPU::halt(){
 }
 
 void CPU::stop(){
-    //placeholder for stop instruction
+    return; //no licencsed games apparently make use of this instruction.
 }
 
 void CPU::nop(){
-    return;
+    return; //literally no operation
 }
 
 

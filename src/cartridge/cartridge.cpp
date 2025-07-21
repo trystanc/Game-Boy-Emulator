@@ -15,3 +15,6 @@ std::vector<u8> readFileToVector(std::ifstream &file) {
 Cartridge::Cartridge(std::ifstream &file) 
         : cartridgeData(readFileToVector(file)) {}
 
+void Cartridge::setMediator(Mediator* _mediator){
+    mediator = _mediator;
+}

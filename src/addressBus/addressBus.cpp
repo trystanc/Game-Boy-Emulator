@@ -97,3 +97,12 @@ void AddressBus::write(u16 address, u8 value) {
 
 }
 
+void AddressBus::requestInterrupt(Interrupt interrupt){
+    ioRegisters[constants::interruptFlagAddress - constants::ioRegistersStart] |= (0b1 << (static_cast<int>(interrupt))); 
+}
+
+void AddressBus::setMediator(Mediator* _mediator){
+    mediator = _mediator;
+}
+
+

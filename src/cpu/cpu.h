@@ -4,10 +4,33 @@
 #include "RegisterPair.h"
 #include "../types.h"
 #include "../addressBus/addressBus.h"
+#include "../gb/mediator.h"
 
 using Register = u8;
-
+class Gameboy;
 class CPU{
+public:
+   CPU(AddressBus& addressBus)
+        : mem(addressBus),
+          AF(A, F),
+          BC(B, C),
+          DE(D, E),
+          HL(H, L) {}
+
+
+    void setFlags(bool zero, bool arithmetic, bool halfCarry, bool carry){
+        setZ(zero);
+        setN(arithmetic);
+        setH(halfCarry);
+        setC(carry);
+    }
+    void tick();
+
+    void setMediator(Mediator* _mediator){
+        mediator = _mediator;
+    }
+
+
 protected: //variables protected instead of private for testing purposes.
     enum flagPosition{
         ZPos = 7,
@@ -16,7 +39,6 @@ protected: //variables protected instead of private for testing purposes.
         CPos = 4,
     };
     AddressBus& mem;
-
 //Value of Registers after boot sequence
     Register A{0x01};
     Register F {0xB0};
@@ -35,7 +57,6 @@ protected: //variables protected instead of private for testing purposes.
     RegisterPair BC;
     RegisterPair DE;
     RegisterPair HL;
-
     friend class RegisterPair;
 
 
@@ -57,27 +78,11 @@ protected: //variables protected instead of private for testing purposes.
     void setC(bool val) { setFlag(CPos, val); }
 //indicates if the last instruction was a branch instruction and was taken.
     bool jumped {false}; 
-public:
-   CPU(AddressBus& addressBus)
-        : mem(addressBus),
-          AF(A, F),
-          BC(B, C),
-          DE(D, E),
-          HL(H, L) {}
-
-
-    void setFlags(bool zero, bool arithmetic, bool halfCarry, bool carry){
-        setZ(zero);
-        setN(arithmetic);
-        setH(halfCarry);
-        setC(carry);
-    }
-
-    int executeInstruction();
-
-
+    Mediator* mediator;
 //Instruction Implementations
  private:   
+    bool handleInterrupts();
+    int executeInstruction();
  //helper functions
     void implementOpcode(u8 opcode);
     void implementCBOpcode();

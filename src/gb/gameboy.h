@@ -8,14 +8,17 @@
 #include "../types.h"
 #include "../cartridge/cartridge.h"
 #include "../addressBus/addressBus.h"
+#include "mediator.h"
+#include "../timers/timerHandler.h"
 
 class GameBoy {
-
-    Cartridge m_cartridge;
-    AddressBus m_addressBus;
-
+    Cartridge cartridge;
+    AddressBus addressBus;
+    CPU cpu;
+    TimerHandler timerHandler;
+    Mediator mediator;
 public:
-    CPU m_cpu;
+
     GameBoy(std::ifstream & file);
 
 };

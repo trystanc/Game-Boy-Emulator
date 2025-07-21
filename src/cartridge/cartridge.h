@@ -3,7 +3,7 @@
 #include "../types.h"
 #include <fstream>
 #include <vector>
-
+#include "../gb/mediator.h"
 
 //This will need to be reewritten to support roms with external ram in the future
 class Cartridge{
@@ -12,6 +12,7 @@ class Cartridge{
     std::vector<u8> cartridgeRam{std::vector<u8>(8192)}; //unused for now, but reserved for ROMs with external RAM
 //switchable bank number n-1 so when 0 switchable bank 01 is selected.
     u8 bankNumber {0};
+    Mediator* mediator;
 public:
     u16 romBankOffSet() {
         return ((bankNumber) * 0x4000);
@@ -29,5 +30,6 @@ public:
     u8& ram(u16 address) {
         return cartridgeRam.at(address);
     }
+    void setMediator(Mediator* _mediator);
 
 };
