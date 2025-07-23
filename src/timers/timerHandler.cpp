@@ -16,12 +16,12 @@ void TimerHandler::updateTimers(uint cycles){
 
 void TimerHandler::advance(){
     ++cycleCount;
-    if (cycleCount % 64){
+    if (cycleCount % 64 == 0){
         ++DIV;
     }
+    if (TIMAEnabled()){
     handleTIMA();
-
-
+    }
 }
 
 bool TimerHandler::TIMAEnabled(){
@@ -31,8 +31,8 @@ bool TimerHandler::TIMAEnabled(){
 static constexpr std::array<int, 4> timerModes{256, 4, 16, 64};
 
 void TimerHandler::handleTIMA(){
-    u8 timerMode = TAC | 0b11;
-    if (cycleCount % timerModes[timerMode]){
+    u8 timerMode = TAC & 0b11;
+    if ((cycleCount % timerModes[timerMode]) == 0){
         ++TIMA;
     }
     if (TIMA == 0){

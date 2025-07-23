@@ -20,7 +20,7 @@ bool CPU::handleInterrupts(){
                 sp -= 2;
                 pc = interruptAddresses[i];
                 ime = false;
-                mem[constants::interruptFlagAddress] = mem[constants::interruptFlagAddress] | static_cast<u8>(~(1 << i));
+                mem[constants::interruptFlagAddress] = mem[constants::interruptFlagAddress] & static_cast<u8>(~(1 << i));
                 return true;
             }
         }

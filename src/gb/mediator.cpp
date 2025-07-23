@@ -22,3 +22,11 @@ void Mediator::advanceState([[maybe_unused]] int cycles){
 void Mediator::requestInterrupt(Interrupt interrupt){
     addressBus.requestInterrupt(interrupt);
 }
+
+void Mediator::updatePPUMode(u8 mode){
+    addressBus[constants::LCDStatusAddress] = addressBus[constants::LCDStatusAddress] | mode;
+}
+
+void Mediator::updateLYequalsLYCbit(bool isLyLyc){
+    addressBus[constants::LCDStatusAddress] = (addressBus[constants::LCDStatusAddress]) | ((isLyLyc) << 2); 
+}

@@ -60,4 +60,6 @@ namespace constants{
     constexpr uint cyclesPerLine {456};
     constexpr uint cyclesUntilVBlank{65664};
     constexpr u16 LYAddress{0xFF44};
+    constexpr u16 LYCAddress{0xFF45};
+    constexpr u16 LCDStatusAddress{0xFF41};
 }

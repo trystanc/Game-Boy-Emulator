@@ -13,17 +13,14 @@ void CPU::tick(){
     return;
 }
 
+
 int CPU::executeInstruction(){
 
 //reset the branched flag from last instruction, 
 // it will be set to true if the instruction was a branch instruction and was taken.
     jumped = false;
-    u8 prevDIV {mem[constants::DIVAddress]};
     u8 opcode = mem[pc];
     implementOpcode(opcode);
-
-    if (mem[constants::DIVAddress] != prevDIV) mem[constants::DIVAddress] = 0;
-
     if (jumped) return opcodeCyclesJumped[opcode];
     else{
         pc += instructionLengths[opcode];

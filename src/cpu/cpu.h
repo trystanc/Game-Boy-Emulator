@@ -57,7 +57,6 @@ protected: //variables protected instead of private for testing purposes.
     RegisterPair BC;
     RegisterPair DE;
     RegisterPair HL;
-    friend class RegisterPair;
     
 
     bool getFlag(flagPosition pos) const {

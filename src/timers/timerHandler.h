@@ -7,9 +7,9 @@ public:
     TimerHandler(AddressBus& addressBus);
     void updateTimers(uint cycles);
     void setMediator(Mediator* _mediator);
-
+    void runCycles(uint cycles);
 private:
-    uint cycleCount {0};
+    u8 cycleCount {0};
     u8& DIV;
     u8& TIMA;
     u8& TMA;

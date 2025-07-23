@@ -36,14 +36,14 @@ file(GLOB_RECURSE MAIN_SOURCES CONFIGURE_DEPENDS src/*.cpp src/*.h)
 list(FILTER MAIN_SOURCES EXCLUDE REGEX ".*/main\\.cpp$")
 # Build executable
 add_executable(gameboy src/main.cpp ${MAIN_SOURCES})
-target_compile_features(gameboy PUBLIC cxx_std_17)
+target_compile_features(gameboy PUBLIC cxx_std_20)
 target_link_libraries(gameboy PRIVATE SFML::Graphics SFML::Window SFML::System)
 
 
 
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS tests/*.cpp src/*.h)
 add_executable(tests ${MAIN_SOURCES} ${TEST_SOURCES})
-target_compile_features(tests PUBLIC cxx_std_17)
+target_compile_features(tests PUBLIC cxx_std_20)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 
 target_compile_options(gameboy PRIVATE -Wall -Wextra -Wshadow -Wconversion -Wno-sign-conversion -Werror)
