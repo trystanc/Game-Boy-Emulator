@@ -1,6 +1,7 @@
 #include "ppu.h"
 #include <cassert>
 #include "../gb/mediator.h"
+#include "ppuRenderer.h"
 
 //This will do for now but will probably want to add more asserts later when 
 //testing rendering.
@@ -80,6 +81,7 @@ void PPU::reset(){
     renderer.resetY();
     renderer.getSprites();
     cycleNumber = 0;
+    mediator->notifyFrameDone();
 
 }
 
@@ -101,6 +103,8 @@ void PPU::notifyLYequalsLYC(){
     mediator->updateLYequalsLYCbit(LY == LYC);
 }
 
-
+const u8* PPU::getFrameBuffer(){
+   return renderer.getFrameBuffer();   
+}
 
 

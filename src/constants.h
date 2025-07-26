@@ -7,6 +7,7 @@ namespace constants{
     constexpr int mCycleTimeNs = static_cast<int>(1e9/masterHz);
     constexpr int sCycleTimeNs = static_cast<int>(1e9/systemHz);
     constexpr int cyclesPerFrame{70224};
+    constexpr long frameTimeMicroS{16667};
 
 
 //memory sizes

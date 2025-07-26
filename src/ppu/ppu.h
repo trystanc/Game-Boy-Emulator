@@ -13,13 +13,10 @@
 class PPU{
 public:
     PPU(AddressBus& _addressBus);
-    const u8* getFrameBuffer(){
-        return renderer.getFrameBuffer();
-    }
+    const u8* getFrameBuffer();
     void runCycles(int cycles);
     int getMode();
     void setMediator(Mediator* mediator);
-
 
 private:
     enum PPUmodes : u8{

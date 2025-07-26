@@ -4,7 +4,7 @@
 #include "../addressBus/addressBus.h"
 #include "../timers/timerHandler.h"
 #include "../ppu/ppu.h"
-
+#include "../emulator/emulator.h"
 void Mediator::connect(){
     cpu.setMediator(this);
     cartridge.setMediator(this);
@@ -12,8 +12,8 @@ void Mediator::connect(){
     timerHandler.setMediator(this);
     ppu.setMediator(this);
 }
-Mediator::Mediator(CPU& _cpu, Cartridge& _cartridge, AddressBus& _addressBus, TimerHandler& _timerHandler, PPU& _ppu) : 
-                cpu(_cpu), cartridge(_cartridge), addressBus(_addressBus), timerHandler(_timerHandler), ppu(_ppu){
+Mediator::Mediator(CPU& _cpu, Cartridge& _cartridge, AddressBus& _addressBus, TimerHandler& _timerHandler, PPU& _ppu, Emulator& _emulator) : 
+                cpu(_cpu), cartridge(_cartridge), addressBus(_addressBus), timerHandler(_timerHandler), ppu(_ppu), emulator(_emulator) {
                     this->connect();
                 }
 
@@ -34,4 +34,8 @@ void Mediator::updatePPUMode(u8 mode){
 void Mediator::updateLYequalsLYCbit(bool isLyLyc){
     u8& status = addressBus.ioRegisters[constants::LCDStatusAddress];
     status = (status & ~(1 << 2)) | (isLyLyc << 2);
+}
+
+void Mediator::notifyFrameDone(){
+    emulator.frameNotFinished = false;
 }
