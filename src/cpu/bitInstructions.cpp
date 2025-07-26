@@ -3,7 +3,7 @@
 
 void CPU::bit_u3_r8(u8 bitPos, u8 value){
     bool zero = (value >> bitPos) & 0x1;
-    setFlags(zero, 0, 1, Cflag());
+    setFlags(!zero, 0, 1, Cflag());
 }
 
 void CPU::bit_u3_mHL(u8 bitPos) {
@@ -30,17 +30,23 @@ void CPU::rl_mHL(){
     u8 value = mem[HL];
     bool carry = (value >> 7) & 0x1;
     bool lowerBit = Cflag();
-    setFlags(value == 0, false, false, carry);
-    mem[HL] = value<<1 | lowerBit;
+    u8 result = value<<1 | lowerBit;
+    setFlags(result == 0, false, false, carry);
+    mem[HL] = result;
 }
 
 void CPU::rl_A() {
+    rl_r8(A);
+}
+
+void CPU::rla(){
     rl_r8(A);
     setFlags(false, false, false, Cflag());
 }
 
 void CPU::rlc_r8(u8& value) {
     bool carry = (value >>7) & 0x1;
+    value *= 2;
     value |= carry;
     setFlags(value == 0, false, false, carry);
 }
@@ -48,22 +54,26 @@ void CPU::rlc_r8(u8& value) {
 void CPU::rlc_mHL(){
     u8 value = mem[HL];
     bool carry = (value >>7) & 0x1;
+    value *= 2;
     value |= carry;
     setFlags(value == 0, false, false, carry);
     mem[HL] = value;
 
 }
 
-void CPU::rlc_A() {
+void CPU::rlca() {
     rlc_r8(A);
     setFlags(false, false, false, Cflag());
+}
+
+void CPU::rlc_A() {
+    rlc_r8(A);
 }
 
 void CPU::rr_r8(u8& value) {
     bool carry = value & 0x1;
     value = (value >> 1) | (Cflag() << 7);
-    setFlags(value == 0, false, false, carry);
-    
+    setFlags(value == 0, false, false, carry);   
 }
 
 void CPU::rr_mHL(){
@@ -75,6 +85,10 @@ void CPU::rr_mHL(){
 }
 
 void CPU::rr_A(){
+    rr_r8(A);
+}
+
+void CPU::rra(){
     rr_r8(A);
     setFlags(false, false, false, Cflag());
 }
@@ -95,7 +109,12 @@ void CPU::rrc_mHL() {
 
 void CPU::rrc_A() {
     rrc_r8(A);
+}
+
+void CPU::rrca(){
+    rrc_r8(A);
     setFlags(false, false, false, Cflag());
+
 }
 
 void CPU::set_u3_r8(u8 bitPos, u8& value) {

@@ -7,6 +7,11 @@
 #include "../src/cartridge/cartridge.h"
 #include <stdexcept>
 #include "../src/gb/mediator.h"
+#include "../src/ppu/ppu.h"
+#include "../src/timers/timerHandler.h"
+
+inline bool enable_debug{false}; //constant that maybe useful for setting breakponts.
+
 
 class AddressBusDebugMode : public AddressBus{
 private: 
@@ -21,11 +26,9 @@ public:
         }
     }
     void write(u16 address, u8 value) override {
-        if (address == 0xff44) {
-            return;
-        } else {
+
             AddressBus::write(address, value);
-        }
+
     }
 
 };
@@ -64,7 +67,32 @@ public:
                            <<std::endl;
 
     }
+    void tick() override{
+    bool interruptOccured = handleInterrupts();
+    if(interruptOccured){
+        mediator->advanceState(constants::interruptCycleLength);
+        return;
+    }
+    uint cycles = executeInstruction();
+    logState();
+    mediator->advanceState(cycles);
+    return;
+    }
+    void closeLogFile(){
+        if (logFile.is_open()) logFile.close();
+    }
 };
+
+class PPUTest: public PPU{
+
+    void notifyLYequalsLYC() override{
+    mediator->updateLYequalsLYCbit(LYC == 0x90);
+    }
+public:
+    PPUTest(AddressBusDebugMode& bus) : PPU(bus){}
+
+};
+
 
 
 

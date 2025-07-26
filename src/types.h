@@ -16,10 +16,12 @@ template<typename std::size_t N>
 using Array = std::array<u8, N>;
 template<std::size_t X, std::size_t Y>
 using Array2d = std::array<std::array<u8, X>, Y>;
+
 using Tile = std::array<std::pair<u8, u8>, 8>;
 using TileMap = std::span<u8, 1024>;
 using OAM = std::span<u8, 160>;
-using Sprite = std::span<u8, 4>; // x, y, tile index, flags
+using Sprite = std::span<u8, 4>;
+
 //values correspond to the bit in interrupt flag register.
 enum class Interrupt{
     VBlank = 0,

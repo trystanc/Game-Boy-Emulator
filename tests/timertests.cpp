@@ -21,7 +21,8 @@ TEST_CASE("Timers Increment correctly"){
     AddressBusDebugMode bus{cartridge};
     CPULogger cpu{bus};
     TimerHandler timer{bus};
-    [[maybe_unused]] Mediator mediator{cpu, cartridge, bus, timer};
+    PPU ppu(bus);
+    [[maybe_unused]] Mediator mediator(cpu, cartridge, bus, timer, ppu);
     
     u8& DIV = bus.ioRegisters[constants::DIVAddress - constants::ioRegistersStart];   
     u8& TIMA = bus.ioRegisters[constants::TIMAAddress - constants::ioRegistersStart];

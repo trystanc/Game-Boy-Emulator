@@ -1,6 +1,7 @@
 #include "ppu.h"
 #include <cassert>
 #include "../gb/mediator.h"
+
 //This will do for now but will probably want to add more asserts later when 
 //testing rendering.
 
@@ -14,10 +15,14 @@ PPU::PPU(AddressBus& _addressBus)
         LY = 0;
 }
 
+void PPU::setMediator(Mediator* _mediator){
+    mediator = _mediator;
+}
+
 
 
 void PPU::runCycles(int cycles){
-    for(int _; _ < cycles; ++_){
+    for(int _; _ < cycles*4; ++_){
         tick();
     }
 }
@@ -36,7 +41,6 @@ void PPU::checkForNewMode(){
                 renderer.resetX();
                 LY += 1;
                 if (LY < constants::screeny) renderer.getSprites();
-                break;
             } 
 //After drawing all scanlines, go into VBlank mode (overwrites previous PPUmode = 2 above)
             if (cycleNumber == constants::cyclesUntilVBlank) updateMode(VBlank);//if going to vblank 
@@ -80,8 +84,8 @@ void PPU::reset(){
 }
 
 void PPU::requestSTATInterrupts(){
-    bool lyConditionmet {((STAT >> 6 & 1) && (STAT>>1 & 1))};
-    bool modeConditionmet = ((STAT >> (PPUmode+3)) & 1);
+    bool lyConditionmet {((STAT >> 6 & 1) && (STAT>>1 & 1))}; //checks STAT register if LY = LYC and if the interrupt is enabled.
+    bool modeConditionmet = ((STAT >> (PPUmode+3))); //checks the mode of the PPUmode status bit and 
     bool validConditionMet = lyConditionmet | modeConditionmet;
     if(!(statLine) && validConditionMet){
         statLine = true;

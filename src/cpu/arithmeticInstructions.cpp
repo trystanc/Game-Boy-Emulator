@@ -20,6 +20,16 @@ u16 CPU::add16bit(const uint first, const uint second){
     return result;
 }
 
+u8 CPU::adc8bit(const uint first, const uint second){
+    u8 result = u8(static_cast<u8>(first) + static_cast<u8>(second)) + static_cast<u8>(Cflag());
+    bool zero = (result == 0);
+    bool halfCarry = (((first & 0xf) + (second & 0xf)) + Cflag())> 0xf;
+    bool carry = ((first & 0xff) + (second & 0xff)) + Cflag()> 0xff;
+    setFlags(zero, false, halfCarry, carry);
+    return result;
+
+}
+
 
 u16 CPU::SPe8(){
     u8 n8 = getn8();
@@ -34,16 +44,15 @@ u16 CPU::SPe8(){
 
 
 void CPU::adc_A_r8(Register& r8){
-    A = add8bit(A, r8 + Cflag());
+    A = adc8bit(A, r8 );
 }
 
 void CPU::adc_A_mHL(){
-    A = add8bit(A, mem[HL] + Cflag());        
+    A = adc8bit(A, mem[HL]);
 }
 
 void CPU::adc_A_n8(){
-    
-    A = add8bit(A, getn8() + Cflag());
+    A = adc8bit(A, getn8());
 }
 
 void CPU::add_A_r8(Register& r8){
@@ -179,13 +188,14 @@ void CPU::or_A(u8 val){
 }
 
 void CPU::sbc_A(u8 value){
-    u8 subtrahend = value + Cflag();
-    s16 result = static_cast<s16>(A) - static_cast<s16>(subtrahend);
+    u16 subtrahend = value + Cflag();
+    [[maybe_unused]] bool x {Cflag()};
+    u8 result = A - static_cast<u8>(subtrahend);
     bool zero = (result == 0);
-    bool carry = (result < 0);
-    bool halfCarry = ((A & 0xf) - (subtrahend & 0xf)) < 0;
+    bool carry = (A < subtrahend);
+    bool halfCarry = (A & 0xf) < ((value & 0xf) + Cflag());
     setFlags(zero, true, halfCarry, carry);
-    A = static_cast<u8>(result);
+    A = result;
 }
 
 void CPU::scf(){
@@ -193,10 +203,10 @@ void CPU::scf(){
 }
 
 void CPU::sub_A(u8 value){
-    s16 result = static_cast<s16>(A) - static_cast<s16>(value);
+    u8 result = A - value;
     bool zero = (result == 0);
-    bool carry = (result < 0);
-    bool halfCarry = ((A & 0xf) - (value & 0xf)) < 0;
+    bool carry = (A < value);
+    bool halfCarry = (A & 0xf) < (value & 0xf);
     setFlags(zero, true, halfCarry, carry);
     A = static_cast<u8>(result);
 }

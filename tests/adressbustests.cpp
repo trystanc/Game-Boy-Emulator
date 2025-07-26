@@ -1,16 +1,17 @@
 #include <catch2/catch_test_macros.hpp>
 #include "../src/addressBus/addressBus.h"
 #include "../src/cartridge/cartridge.h"
+#include "../src/types.h"
 
 TEST_CASE("Address Bus Tests"){
-    SECTION("Test Address Bus functionality."){
-
+    
     std::ifstream file("./tests/gb-test-roms/cpu_instrs/individual/01-special.gb", std::ios::binary);
     CHECK(file);
     Cartridge cartridge(file);
     file.close();
     AddressBus addressBus(cartridge);
-
+    
+    SECTION("Test Addressing"){
     u16 lhs, rhs;
 
     // testing rom is accessed correctly 
@@ -70,4 +71,22 @@ TEST_CASE("Address Bus Tests"){
     lhs = 0xFEFFu;
     REQUIRE_THROWS(static_cast<u8>(addressBus[lhs]));
 }
+    SECTION("Test Interrupt Handling"){
+        u8& IF = addressBus.ioRegisters[constants::interruptFlagAddress - constants::ioRegistersStart];
+        IF = 0;
+        for(int i {0}; i < u8(Interrupt::numOfInterrupts); ++i){
+            SECTION("Individual Interrupt"){
+                addressBus.requestInterrupt(static_cast<Interrupt>(i));
+                REQUIRE( (IF - (1<<i)) == 0);
+            }
+        }
+    }
+    
+    SECTION("Writing to DIV sets it to 0"){
+        u8& DIV = addressBus.ioRegisters[constants::DIVAddress - constants::ioRegistersStart];
+        DIV = 0x50;
+        addressBus[constants::DIVAddress] = 0x13;
+        REQUIRE(DIV == 0);
+    }
+
 }

@@ -3,7 +3,6 @@
 #include "../addressBus/addressBus.h"
 #include "../constants.h"
 #include "ppuRenderer.h"
-#include <SFML/Graphics/Color.hpp>
 #include <optional>
 #include <span>
 #include <array>
@@ -19,7 +18,7 @@ public:
     }
     void runCycles(int cycles);
     int getMode();
-    void setMediator();
+    void setMediator(Mediator* mediator);
 
 
 private:
@@ -35,18 +34,19 @@ private:
     PPUmodes PPUmode {VBlank};
     uint cycleNumber {constants::cyclesPerFrame};
     const u8& STAT;
-    Mediator* mediator;
-    u8& LYC;
     bool statLine{false};
 
 
 
 //array index is the colour index as defined by the gameboy, so 0 is white, 1 is light grey, 2 is dark grey, 3 is black    
-
     void reset();
     void tick();
     void checkForNewMode();
     void updateMode(PPUmodes mode);
     void requestSTATInterrupts();
-    void notifyLYequalsLYC();
+protected:    
+    u8& LYC;
+    Mediator* mediator;
+    virtual void notifyLYequalsLYC();
+
 };

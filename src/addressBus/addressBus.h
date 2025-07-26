@@ -4,6 +4,7 @@
 #include "../constants.h"
 #include "../cartridge/cartridge.h"
 #include "../gb/mediator.h"
+
 class AddressBus{
     struct Proxy{
         AddressBus& mem;

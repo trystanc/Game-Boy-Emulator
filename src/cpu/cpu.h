@@ -24,7 +24,7 @@ public:
         setH(halfCarry);
         setC(carry);
     }
-    void tick();
+    virtual void tick();
 
     void setMediator(Mediator* _mediator){
         mediator = _mediator;
@@ -80,15 +80,18 @@ protected: //variables protected instead of private for testing purposes.
 //indicates if the last instruction was a branch instruction and was taken.
     bool jumped {false}; 
     Mediator* mediator;
+    uint executeInstruction();
+    bool handleInterrupts();
 //Instruction Implementations
  private:   
-    bool handleInterrupts();
-    int executeInstruction();
+
+
  //helper functions
     void implementOpcode(u8 opcode);
     void implementCBOpcode();
 
     u8 add8bit(const uint first, const uint second);
+    u8 adc8bit(const uint first, const uint second);
     u16 add16bit(const uint first, const uint second);
     void setn8(u8 value);
     u16 getn16();
@@ -184,15 +187,19 @@ protected: //variables protected instead of private for testing purposes.
     void rl_r8(u8& value);
     void rl_mHL();
     void rl_A();
+    void rla();
     void rlc_r8(u8& value);
     void rlc_mHL();
+    void rlca();
     void rlc_A();
     void rr_r8(u8& value);
     void rr_mHL();
     void rr_A();
+    void rra();
     void rrc_r8(u8& value);
     void rrc_mHL();
     void rrc_A();
+    void rrca();
     void set_u3_r8(u8 bitPos, Register& value);
     void set_u3_mHL(u8 bitPos);
     void sla_r8(u8& value);

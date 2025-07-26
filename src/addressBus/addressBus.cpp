@@ -3,7 +3,6 @@
 #include <iostream>
 #include <stdexcept>
 
-
 u8 AddressBus::read(u16 address) {
 
     u16 highNibble = address >> 12;
@@ -36,7 +35,6 @@ u8 AddressBus::read(u16 address) {
                 return hRam[address - constants::hRamStart];
             }
             else if (address >= constants::ioRegistersStart) {
-
                 return ioRegisters[address - constants::ioRegistersStart];
             }
             else if (address >= constants::oamStart && address < constants::forbiddenStart) {
@@ -55,7 +53,6 @@ u8 AddressBus::read(u16 address) {
 }
 
 void AddressBus::write(u16 address, u8 value) {
-
     u16 highNibble = address >> 12;
     switch (highNibble) {
         case 0x0:
@@ -66,6 +63,7 @@ void AddressBus::write(u16 address, u8 value) {
         case 0x5:
         case 0x6:
         case 0x7:
+            return;
         case 0x8:
         case 0x9:
             vram[address - constants::vramStart] = value; return;
@@ -82,17 +80,22 @@ void AddressBus::write(u16 address, u8 value) {
             if (address >= constants::hRamStart) {
                 hRam[address - constants::hRamStart] = value; return;
             }
+            
             else if (address >= constants::ioRegistersStart) {
+                if (address == constants::DIVAddress){ ioRegisters[address - constants::ioRegistersStart] = 0; return;}
                 ioRegisters[address - constants::ioRegistersStart] = value; return;
             } 
+            
             else if ( address >= constants::oamStart && address < constants::forbiddenStart) {
                 oam[address - constants::oamStart] = value; return;
             } 
+            
             else {
               throw std::out_of_range("Access to forbidden address attempted.");
               return; 
             }
-        default:
+        
+            default:
             throw std::out_of_range("Address out of range.");
             return; 
 

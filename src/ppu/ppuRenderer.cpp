@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <optional>
 #include <cassert>
-
+#include <iostream>
 PPURenderer::PPURenderer(AddressBus& _addressBus)
     : mem(_addressBus),
         tileMap1(_addressBus.vram.data() + constants::tileMap1Start - constants::vramStart, 1024),
