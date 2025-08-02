@@ -15,7 +15,7 @@ std::array<std::string, 11> fileNames = {"01-special.gb",
 
 int main() {
   std::ifstream file(
-      "./tests/gb-test-roms/cpu_instrs/individual/02-interrupts.gb",
+      "./tests/gb-test-roms/cpu_instrs/individual/01-special.gb",
       std::ios::binary);
   if (!file) {
     std::cerr << "File not found" << std::endl;

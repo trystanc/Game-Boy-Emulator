@@ -180,7 +180,7 @@ bool PPURenderer::writeSpritePixel(Sprite sprite){
     assert(yRelative >= 0 && yRelative < (spriteSizeMode() ? 16 : 8) && "y-coordinate out of range");
     u16 address = mem[u16(constants::vramStart + tileIndex + (yRelative >= 8))];
     u8 pixel = getTilePixel(address, xRelative, yRelative % 8);
-    return writeToBufferSprite(pixel, attributes >> paletteNumberPos & 0b1);
+    return writeToBufferSprite(pixel, (attributes >> paletteNumberPos) & 0b1);
 
 }
 

@@ -387,7 +387,6 @@ void CPU::implementOpcode(u8 opcode) {
     break;
   case 0x76:
     halt();
-    std::cout << "halt called." << std::endl;
     break;
   case 0x77:
     ld_mr16_r8(HL, A);
