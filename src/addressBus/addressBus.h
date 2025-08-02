@@ -32,6 +32,7 @@ public:
     virtual void write(u16 address, u8 value);
     void setMediator(Mediator* _mediator);
     void requestInterrupt(Interrupt interrupt);
+    void DMATransfer(u8 address);
 
         
 };

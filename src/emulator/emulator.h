@@ -1,3 +1,4 @@
+#pragma once
 #include "../gb/gameboy.h"
 #include<SFML/Graphics.hpp>
 

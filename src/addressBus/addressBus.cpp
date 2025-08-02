@@ -1,8 +1,7 @@
 #include "addressBus.h"
 #include <cassert>
-#include <iostream>
 #include <stdexcept>
-
+#include <iostream>
 u8 AddressBus::read(u16 address) {
 
     u16 highNibble = address >> 12;
@@ -82,7 +81,16 @@ void AddressBus::write(u16 address, u8 value) {
             }
             
             else if (address >= constants::ioRegistersStart) {
-                if (address == constants::DIVAddress){ ioRegisters[address - constants::ioRegistersStart] = 0; return;}
+                if (address == constants::DMARegisterAddress){
+                    DMATransfer(value);
+                    ioRegisters[address - constants::ioRegistersStart] = value;
+                    return;  
+                }
+
+                if (address == constants::DIVAddress){ 
+                    ioRegisters[address - constants::ioRegistersStart] = 0; 
+                    return;}
+                
                 ioRegisters[address - constants::ioRegistersStart] = value; return;
             } 
             
@@ -111,4 +119,10 @@ void AddressBus::setMediator(Mediator* _mediator){
     mediator = _mediator;
 }
 
+void AddressBus::DMATransfer(u8 value){
+    u16 startAddress = value << 8;
+    for(u16 i {0}; i < constants::oamSize; ++i){
+        write(constants::oamStart + i, read(startAddress + i)); 
+    }
+}
 

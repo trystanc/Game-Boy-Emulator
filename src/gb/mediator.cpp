@@ -32,7 +32,7 @@ void Mediator::updatePPUMode(u8 mode){
 }
 
 void Mediator::updateLYequalsLYCbit(bool isLyLyc){
-    u8& status = addressBus.ioRegisters[constants::LCDStatusAddress];
+    u8& status = addressBus.ioRegisters[constants::LCDStatusAddress - constants::ioRegistersStart];
     status = (status & ~(1 << 2)) | (isLyLyc << 2);
 }
 

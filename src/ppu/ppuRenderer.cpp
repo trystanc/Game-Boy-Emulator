@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <optional>
 #include <cassert>
-#include <iostream>
+
 PPURenderer::PPURenderer(AddressBus& _addressBus)
     : mem(_addressBus),
         tileMap1(_addressBus.vram.data() + constants::tileMap1Start - constants::vramStart, 1024),
@@ -78,7 +78,7 @@ u8 PPURenderer::getTilePixel(const u16 address, u8 x_pixel, u8 y_pixel){
 
 
 u16 PPURenderer::getTileAddress(u8 offset){
-    return (mapAddressMode())? (constants::vramStart + offset) : (constants::signedAddressStart + static_cast<s8>(offset));
+    return (mapAddressMode()) ? static_cast<u16>((constants::vramStart + offset*static_cast<u16>(16))) : static_cast<u16>(constants::signedAddressStart + 16*static_cast<s8>(offset));
 }
 
 
@@ -100,13 +100,15 @@ bool PPURenderer::drawWindowPixel(){
     return false;
 }
 
+constexpr std::array<u8, 10> tileNumbers {48, 49, 45, 155, 112, 101, 99, 105, 97, 108};
+
 void PPURenderer::drawBackgroundPixel(){
     if (isBackgroundEnabled()){
         u8 x_start = u8(currentX + SCX);
         u8 y_start = u8(currentY + SCY);
         u8 x_pixel = x_start % 8;
         u8 y_pixel = y_start % 8;
-        u16 i = u16((y_start / 8) * 32 + (x_start / 8));
+        u16 i = u16((y_start / 8) * 32) + u16((x_start / 8));
         u8 offset = backgroundTileMap() ? tileMap2[i] : tileMap1[i];
         u16 address = getTileAddress(offset);
         u8 pixel = getTilePixel(address, x_pixel, y_pixel);

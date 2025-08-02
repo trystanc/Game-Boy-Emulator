@@ -1,6 +1,7 @@
 #pragma once
 #include "types.h"
 namespace constants{
+
 //CPU related constants
     constexpr int masterHz {4194304};
     constexpr int systemHz {masterHz/4};
@@ -63,4 +64,7 @@ namespace constants{
     constexpr u16 LYAddress{0xFF44};
     constexpr u16 LYCAddress{0xFF45};
     constexpr u16 LCDStatusAddress{0xFF41};
+    constexpr u16 DMARegisterAddress{0xFF46};
+
+
 }

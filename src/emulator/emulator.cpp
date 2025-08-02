@@ -13,7 +13,7 @@ Emulator::Emulator(std::ifstream& file)
 }
 
 void Emulator::run(){
-    sf::Clock clock;
+    // sf::Clock clock;
     while (window.isOpen()){
         while(const std::optional event = window.pollEvent()){
             if (event->is<sf::Event::Closed>()){
