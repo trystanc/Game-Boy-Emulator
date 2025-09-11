@@ -55,16 +55,18 @@ namespace constants{
     constexpr u16 tileMap2Start{0x9C00};
     constexpr u16 BGPAddress {0xFF47};
     constexpr u16 OBP0Address {0xFF48};
-    constexpr u16 maxSpritesPerLine {10}; //maximum number of sprites that can be drawn on a single line, this is a hardware limitation
-    constexpr u16 maxSpritesPerFrame {40}; //maximum number of sprites that can be drawn on a single frame, this is a hardware limitation
+    constexpr u16 maxSpritesPerLine {10}; //maximum number of sprites that can be drawn on a single line
+    constexpr u16 maxSpritesPerFrame {40}; //maximum number of sprites that can be drawn on a single frame
     constexpr u8 maxRGBvalue {255}; //maximum value for RGB components, used for the frame buffer
-    constexpr u16 signedAddressStart {0x8800}; //start of the signed address space for tile data, used for 8x16 sprites
+    constexpr u16 signedAddressStart {0x9000};
     constexpr uint cyclesPerLine {456};
     constexpr uint cyclesUntilVBlank{65664};
     constexpr u16 LYAddress{0xFF44};
     constexpr u16 LYCAddress{0xFF45};
     constexpr u16 LCDStatusAddress{0xFF41};
     constexpr u16 DMARegisterAddress{0xFF46};
+    constexpr u16 tileSize {16};
+    constexpr uint tileMapSize {1024};
 
 
 }
