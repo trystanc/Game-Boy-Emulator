@@ -86,8 +86,8 @@ void PPU::reset(){
 }
 
 void PPU::requestSTATInterrupts(){
-    bool lyConditionmet {((STAT >> 6 & 1) && (STAT>>1 & 1))}; //checks STAT register if LY = LYC and if the interrupt is enabled.
-    bool modeConditionmet = ((STAT >> (PPUmode+3))); //checks the mode of the PPUmode status bit and 
+    bool lyConditionmet {((STAT >> 6) & 1) && ((STAT>>2) & 1)}; //checks STAT register if LY = LYC and if the interrupt is enabled.
+    bool modeConditionmet = (PPUmode == DrawMode ? false : ((STAT >> (PPUmode+3))) & 1); 
     bool validConditionMet = lyConditionmet | modeConditionmet;
     if(!(statLine) && validConditionMet){
         statLine = true;

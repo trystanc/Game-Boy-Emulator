@@ -6,8 +6,8 @@
 #include <optional>
 #include<utility>
 
-constexpr std::array<u8, 40> makeSpriteDataIndices();
 class PPURenderer{
+
  public:
     PPURenderer(AddressBus& _addressBus);
     const u8* getFrameBuffer(){
@@ -24,7 +24,8 @@ private:
     AddressBus& mem;
     TileMap tileMap1;
     TileMap tileMap2;
-    const u8& SCX, SCY;
+    const u8& SCX;
+    const u8& SCY;
     const u8& WX;
     const u8& WY; 
     const u8& LY;
@@ -33,6 +34,8 @@ private:
     std::array<u8, constants::screenx * constants::screeny *4> frameBuffer;
     u8 currentX{0};
     u8 currentY{0};
+    bool windowPixelDrawnOnLineAlready {false};
+    u8 internalLineCounter {0};
 //array index is the colour index as defined by the gameboy, so 0 is white, 1 is light grey, 2 is dark grey, 3 is black    
     const std::array<sf::Color, 4> colours { 
         sf::Color{255, 255, 255},
@@ -42,7 +45,7 @@ private:
     };
 
     std::vector<Sprite> currentSpriteData;
-    int currentSpriteIndex{0};
+    int currentMinSprite{-1};
     static constexpr std::array<u8, constants::maxSpritesPerFrame> spriteDataIndices = [] () {
     std::array<u8, 40> arr = {};
     for (u8 i = 0; i < 40; ++i) {
@@ -55,7 +58,7 @@ private:
     bool isBackgroundEnabled();
     bool mapAddressMode();
     bool windowTileMap();
-    bool backgroundTileMap();
+    bool isTileMap2Active();
     bool spriteSizeMode();
     bool isObjectEnabled();
     u8 getBackgroundColour(u8 pixel);
@@ -70,4 +73,11 @@ private:
     std::optional<Sprite> getCurrentSprite();
     bool drawSpritePixel();
     bool writeSpritePixel(Sprite sprite);
+    void handleInternalLineCounter();
+    bool spriteInRange(u8 xStart);
+    std::vector<u8> getValidSpriteIndices();
+    u16 getSpriteAddress(u8 tileIndex, u8 yRelative);
+    u8 getYRelative(u8 yMapped, u8 spriteY, u8 attributes);
+    
+
 };
