@@ -77,9 +77,8 @@ void PPU::tick(){
 
 void PPU::reset(){
     LY = 0;
-    renderer.resetX();
     renderer.resetY();
-    renderer.getSprites();
+    renderer.resetX();
     cycleNumber = 0;
     mediator->notifyFrameDone();
 

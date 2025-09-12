@@ -138,6 +138,7 @@ u8 PPURenderer::getYmin(u8 yMapped){
 
 void PPURenderer::getSprites(){
     currentSpriteData.clear();
+    [[maybe_unused]] bool temp {currentY == 0};
     u8 yMapped = currentY + 16;
     u8 yMin = getYmin(yMapped);
     int spriteNumber {0};
@@ -147,7 +148,7 @@ void PPURenderer::getSprites(){
         }
         Sprite sprite = std::span<u8, 4>(oam.subspan(index, 4));
         u8 yPos = sprite[0];
-        if (yPos > yMin && yPos < (yMin + (spriteSizeMode()+1)*8)){
+        if (yPos > yMin && yPos <= (yMin + (spriteSizeMode()+1)*8)){
             currentSpriteData.push_back(sprite);
             ++spriteNumber;
         }
