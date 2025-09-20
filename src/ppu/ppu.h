@@ -41,6 +41,7 @@ private:
     void checkForNewMode();
     void updateMode(PPUmodes mode);
     void requestSTATInterrupts();
+    void requestVBlankInterrupt();
 protected:    
     u8& LYC;
     Mediator* mediator;

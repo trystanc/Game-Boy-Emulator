@@ -1,4 +1,5 @@
 #include "addressBus.h"
+#include "SFML/Window/Keyboard.hpp"
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
@@ -25,8 +26,7 @@ u8 AddressBus::read(u16 address) {
         case 0xD:
             return wram[address - constants::wramStart];
         case 0xE:
-              throw std::out_of_range("Access to forbidden address attempted.");
-              return hRam[0]; // This line will never be reached, but is needed to avoid compiler warnings.            
+              return hRam[0]; // Access to forbidden address attempted, return arbitrary value.           
         case 0xF:
 
 
@@ -34,6 +34,7 @@ u8 AddressBus::read(u16 address) {
                 return hRam[address - constants::hRamStart];
             }
             else if (address >= constants::ioRegistersStart) {
+                if (address == constants::ioRegistersStart) return 0xff;
                 return ioRegisters[address - constants::ioRegistersStart];
             }
             else if (address >= constants::oamStart && address < constants::forbiddenStart) {
@@ -61,7 +62,7 @@ void AddressBus::write(u16 address, u8 value) {
         case 0x4:
         case 0x5:
         case 0x6:
-        case 0x7:
+        case 0x7:           
             return;
         case 0x8:
         case 0x9:
@@ -73,7 +74,6 @@ void AddressBus::write(u16 address, u8 value) {
         case 0xD:
             wram[address - constants::wramStart] = value; return;
         case 0xE:
-              throw std::out_of_range("Access to forbidden address attempted.");
               return;            
         case 0xF:
             if (address >= constants::hRamStart) {
@@ -81,6 +81,7 @@ void AddressBus::write(u16 address, u8 value) {
             }
             
             else if (address >= constants::ioRegistersStart) {
+                if (address == constants::ioRegistersStart) writeJPRegister(value);
                 if (address == constants::DMARegisterAddress){
                     DMATransfer(value);
                     ioRegisters[address - constants::ioRegistersStart] = value;
@@ -99,8 +100,7 @@ void AddressBus::write(u16 address, u8 value) {
             } 
             
             else {
-              throw std::out_of_range("Access to forbidden address attempted.");
-              return; 
+              return; // Forbidden address,  do nothing.
             }
         
             default:
@@ -120,9 +120,97 @@ void AddressBus::setMediator(Mediator* _mediator){
 }
 
 void AddressBus::DMATransfer(u8 value){
-    u16 startAddress = value << 8;
+    u16 startAddress = value << 8; //value specifies the upper byte for the address.
+
     for(u16 i {0}; i < constants::oamSize; ++i){
         write(constants::oamStart + i, read(startAddress + i)); 
     }
 }
 
+namespace input{
+        enum buttonIndicies{
+        a,
+        b,
+        select,
+        start,
+        right,
+        left,
+        up,
+        down,
+        numberOfButtons
+    };
+}
+
+u8 unsetBit(u8 val, u8 bitPos){
+    return val & static_cast<u8>((~(1<<bitPos)));
+}
+
+u8 setBit(u8 val, u8 bitPos){
+    return val | static_cast<u8>((1<<bitPos));
+};
+
+
+//Some kind of hashmap is probably cleaner here, but switch statement is more performant.
+using SCode = sf::Keyboard::Scan;
+void AddressBus::updateButton(SCode code, bool released){
+    switch(static_cast<int>(code)){
+        case(static_cast<int>(SCode::X)):
+            updateButtonState(input::a, released);
+            break;
+        case(static_cast<int>(SCode::Z)):
+            updateButtonState(input::b, released);
+            break;
+        case(static_cast<int>(SCode::Enter)):
+            updateButtonState(input::start, released);
+            break;
+        case(static_cast<int>(SCode::RShift)):
+            updateButtonState(input::select, released);
+            break;
+        case(static_cast<int>(SCode::Up)):
+            updateButtonState(input::up, released);
+            break;
+        case(static_cast<int>(SCode::Down)):
+            updateButtonState(input::down, released);
+            break;
+        case(static_cast<int>(SCode::Left)):
+            updateButtonState(input::left, released);
+            break;
+        case(static_cast<int>(SCode::Right)):
+            updateButtonState(input::right, released);
+            break;
+    }       
+}
+
+
+void AddressBus::updateButtonState(u8 button, bool released){
+        const u8 beforeState {buttonStates};
+        buttonStates = released ? setBit(beforeState, button): 
+                                unsetBit(beforeState, button);
+        if(!released){
+            handlePotentialJPInterrupt(beforeState, buttonStates);
+        }
+
+}
+void AddressBus::handlePotentialJPInterrupt(const u8 beforeState, const u8 afterState){
+    const u8 JPRegister {ioRegisters[constants::ioRegistersStart]};
+    if ((JPRegister >> 5) & 0b1) {
+        if ((0xf & beforeState) > (0xf & afterState)) requestInterrupt(Interrupt::Joypad);
+    }
+    if ((JPRegister >> 4) & 0b1) {
+        if ((0xf0 & beforeState) > (0xf0 & afterState)) requestInterrupt(Interrupt::Joypad);
+    } 
+}
+
+void AddressBus::writeJPRegister(u8 value){
+    const u8 beforeState(ioRegisters[constants::ioRegistersStart]);
+    ioRegisters[constants::ioRegistersStart] = value & ~0xf;
+    ioRegisters[constants::ioRegistersStart] += (beforeState & 0x0f);   
+}
+
+u8 AddressBus::readJPRegister(){
+    const u8 JPRegister {ioRegisters[constants::ioRegistersStart]};
+        if ((JPRegister >> 5) & 0b1) return (JPRegister | (0xf & buttonStates));
+        if ((JPRegister >> 4) & 0b1) return (JPRegister | (0xf0 & buttonStates)); 
+        return 0xff;       
+    
+}

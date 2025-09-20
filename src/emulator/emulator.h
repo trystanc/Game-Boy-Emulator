@@ -3,7 +3,6 @@
 #include<SFML/Graphics.hpp>
 
 class Emulator{
-    
 public:
     Emulator(std::ifstream& file);
     bool frameNotFinished{true};
@@ -14,5 +13,5 @@ public:
 private:
     GameBoy GB;
     sf::RenderWindow window;
-
+    int scanCodeToButton;
 };

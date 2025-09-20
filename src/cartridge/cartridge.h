@@ -21,8 +21,8 @@ public:
         bankNumber = bank;
 
     }
-    u8& rom(u16 address) {
-        return (address < 0x4000) ? cartridgeData.at(address) : cartridgeData.at(romBankOffSet() + address);
+    u8 rom(u16 address) {
+        return cartridgeData.at(address);
     }
 
     Cartridge(std::ifstream &file);

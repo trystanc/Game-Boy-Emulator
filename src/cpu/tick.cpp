@@ -21,6 +21,7 @@ uint CPU::executeInstruction() {
   jumped = false;
   u8 opcode = mem[pc];
   implementOpcode(opcode);
+ // std::cout<<std::hex<<"pc: "<<pc<< " " << "opcode: "<< +opcode<<std::endl;
   if (jumped)
     return opcodeCyclesJumped[opcode];
   else {

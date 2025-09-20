@@ -50,8 +50,7 @@ const u8& PPURenderer::getY(){
 }
 
 void PPURenderer::drawPixel(){
-    assert(currentX < 160 && currentY < 144 && "Pixel coordinate out of range for screen");
-    
+    if (currentX < 160 && currentY < 144){
     bool wasSpritePixelDrawn {drawSpritePixel()};
     if (!wasSpritePixelDrawn){
         bool wasWindowPixelDrawn {drawWindowPixel()};
@@ -59,6 +58,7 @@ void PPURenderer::drawPixel(){
             drawBackgroundPixel(); //If you don't draw a sprite pixel or a window pixel, you draw a background pixel...
         }
     }
+}
 }
 
 enum attributeBits{

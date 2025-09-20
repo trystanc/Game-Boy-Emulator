@@ -27,6 +27,8 @@ namespace constants{
     constexpr u16 ioRegistersStart {0xFF00};
     constexpr u16 hRamStart {0xFF80};
     constexpr u16 endOfMemory {0xFFFF};
+
+
 //Interrupt related constants
     constexpr u16 interruptFlagAddress{0xFF0F};
     constexpr u16 interruptEnableAddress{0xFFFF};
@@ -67,6 +69,7 @@ namespace constants{
     constexpr u16 DMARegisterAddress{0xFF46};
     constexpr u16 tileSize {16};
     constexpr uint tileMapSize {1024};
+    
 
 
 }

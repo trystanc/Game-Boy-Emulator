@@ -8,9 +8,11 @@
 #include "../types.h"
 #include "../cartridge/cartridge.h"
 #include "../addressBus/addressBus.h"
+#include "SFML/Window/Event.hpp"
 #include "mediator.h"
 #include "../timers/timerHandler.h"
 #include "../ppu/ppu.h"
+#include <SFML/Window/Keyboard.hpp>
 
 class Emulator;
 //It would be a good idea if this class can communicate to the addressBus what mode the PPU for read-only mode.
@@ -26,6 +28,7 @@ public:
     GameBoy(std::ifstream& file, Emulator& emulator);
     void advance();
     const u8* getFrameBuffer();
-
+    template<typename T>
+    void handleKeyEvent(const T* const ptr, bool released);
 };
 

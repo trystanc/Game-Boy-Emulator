@@ -1,11 +1,12 @@
 #pragma once
-#include <array>
 #include "../types.h"
 #include "../constants.h"
 #include "../cartridge/cartridge.h"
 #include "../gb/mediator.h"
+#include <SFML/Window/Keyboard.hpp>
 
 class AddressBus{
+
     struct Proxy{
         AddressBus& mem;
         u16 address;
@@ -13,9 +14,9 @@ class AddressBus{
         operator u8(){return mem.read(address);}
         void operator=(u8 value) { mem.write(address, value); }
     };
-
-public:
     Mediator* mediator;
+    u8 buttonStates{0xff};
+public:
     Cartridge& cartridge;
     Array<constants::vramSize> vram;
     Array<constants::wramSize> wram;
@@ -23,7 +24,8 @@ public:
     Array<constants::ioRegistersSize> ioRegisters;
     Array<constants::hRamSize> hRam;
     AddressBus(Cartridge& cart)
-        : cartridge(cart), vram{}, wram{}, oam{}, ioRegisters{}, hRam{} {}
+        : cartridge(cart), vram{}, wram{}, oam{}, ioRegisters{}, hRam{} 
+        {write(constants::ioRegistersStart, 0xff);}
 
     Proxy operator[](u16 address){
         return Proxy(*this, address);
@@ -33,6 +35,9 @@ public:
     void setMediator(Mediator* _mediator);
     void requestInterrupt(Interrupt interrupt);
     void DMATransfer(u8 address);
-
-        
+    void updateButton(sf::Keyboard::Scan scan, bool released);
+    void updateButtonState(u8 button, bool released);
+    void handlePotentialJPInterrupt(const u8 beforeState, const u8 afterState);
+    void writeJPRegister(u8 value);
+    u8 readJPRegister();       
 };

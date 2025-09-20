@@ -51,6 +51,10 @@ void PPU::checkForNewMode(){
                 updateMode(OAMScan);
                 reset();
             }
+            else if ((cycleNumber % constants::cyclesPerLine) == 0){ //if going to new line
+                renderer.incrementY();
+                LY += 1;
+            }
                 break;
         case OAMScan:
             if ((cycleNumber % constants::cyclesPerLine) ==  80) updateMode(DrawMode); 
@@ -65,6 +69,7 @@ void PPU::checkForNewMode(){
 void PPU::tick(){
     notifyLYequalsLYC();
     requestSTATInterrupts();
+    requestVBlankInterrupt();
     checkForNewMode();
     if (PPUmode == DrawMode && (cycleNumber % 456 >= 92)){
         renderer.drawPixel();
@@ -72,6 +77,7 @@ void PPU::tick(){
     }
     ++cycleNumber;
     assert(renderer.getY() == LY && "LY does not equal the Y position in renderer.");
+    assert(LY < 154);
 }
 
 
@@ -106,4 +112,8 @@ const u8* PPU::getFrameBuffer(){
    return renderer.getFrameBuffer();   
 }
 
-
+void PPU::requestVBlankInterrupt(){
+    if (PPUmode == VBlank){
+        mediator->requestInterrupt(Interrupt::VBlank);
+    }
+}

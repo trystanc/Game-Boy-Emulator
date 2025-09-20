@@ -1,4 +1,6 @@
 #include "emulator.h"
+#include "SFML/Window/Event.hpp"
+#include "SFML/Window/Keyboard.hpp"
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <SFML/System.hpp>
@@ -13,11 +15,17 @@ Emulator::Emulator(std::ifstream& file)
 }
 
 void Emulator::run(){
-    // sf::Clock clock;
+        sf::Clock clock;
     while (window.isOpen()){
         while(const std::optional event = window.pollEvent()){
             if (event->is<sf::Event::Closed>()){
                 window.close();
+            }
+            else if (const auto* keyPressed  = event->getIf<sf::Event::KeyPressed>()){
+                GB.handleKeyEvent(keyPressed, false);
+            }
+            else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()){
+                GB.handleKeyEvent(keyReleased, true);
             }
         }
     
@@ -26,8 +34,11 @@ void Emulator::run(){
     }
     
     draw(GB.getFrameBuffer());
-    // auto timeElapsed = clock.getElapsedTime().asMicroseconds();
-    // sf::sleep(sf::microseconds(constants::frameTimeMicroS - timeElapsed));
+    auto timeElapsed = clock.getElapsedTime().asMicroseconds();
+    if (timeElapsed < constants::frameTimeMicroS){
+        sf::sleep(sf::microseconds(constants::frameTimeMicroS - timeElapsed));
+    }
+    clock.restart();
     frameNotFinished = true;
     }
 
@@ -43,3 +54,4 @@ void Emulator::draw(const u8* frameBuffer){
     window.draw(sprite);
     window.display();
 }
+
